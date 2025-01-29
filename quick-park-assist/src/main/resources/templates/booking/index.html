@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Parking Spot Booking</title>
+    <link rel="icon" href="@{/favicon.ico}" />
+
+    <link rel="stylesheet" th:href="@{/css/spotbooking/style.css}">
+
+
+</head>
+
+<body th:class="@{header bg-box}">
+<div th:class="@{bg-box}">
+    <img th:src="@{/images/slider-bg.jpg}" alt="Background Image" />
+</div>
+<header th:class="@{header bg-box}">
+
+    <div th:class="@{container}" >
+        <h1 th:class="@{logo}">SMART PARKING SPOTS</h1>
+        <nav th:class="@{navigation}">
+<!--            <ul>-->
+<!--                <li><a th:href="@{/home}" th:classappend="${#httpServletRequest.requestURI == '/home' ? 'active' : ''}">HOME</a></li>-->
+<!--                <li><a th:href="@{/registration}" th:classappend="${#httpServletRequest.requestURI == '/registration' ? 'active' : ''}">REGISTRATION</a></li>-->
+<!--                <li><a th:href="@{/smart-spots}" th:classappend="${#httpServletRequest.requestURI == '/smart-spots' ? 'active' : ''}">SMART SPOTS</a></li>-->
+<!--                <li><a th:href="@{/book}" th:classappend="${#httpServletRequest.requestURI == '/book' ? 'active' : ''}">BOOKING</a></li>-->
+<!--                <li><a th:href="@{/addon-service}" th:classappend="${#httpServletRequest.requestURI == '/addon-service' ? 'active' : ''}">ADDON SERVICES</a></li>-->
+<!--                <li><a th:href="@{/ev-charging}" th:classappend="${#httpServletRequest.requestURI == '/ev-charging' ? 'active' : ''}">EV CHARGING</a></li>-->
+<!--            </ul>-->
+            <ul>
+                <li><a th:href="@{/home}">HOME</a></li>
+                <li><a th:href="@{/registration}">REGISTRATION</a></li>
+                <li class="nav-item" th:if="${user != null and user.role == 'SPOT_OWNER'}"
+                    th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+                    <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+                </li>
+                <li><a th:href="@{/booking}" th:class="@{active}">BOOKING</a></li>
+                <li><a th:href="@{/viewAllAddonServices}">ADDON SERVICES</a></li>
+                <li><a th:href="@{/reservations}">EV CHARGING</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main th:class="@{main}" style="margin-top: 250px;">
+    <div th:class="@{grid-container}">
+        <!-- Sidebar (Aside) -->
+        <aside th:class="@{aside}">
+            <h2>Book a Spot</h2>
+<!--                <ul>-->
+<!--                    <li><a th:href="@{/book}" th:classappend="${#request.servletPath.contains('/book') ? 'active' : ''}">Book Now</a></li>-->
+<!--                    <li><a th:href="@{/modify-Booking-Details}" th:classappend="${#request.servletPath.contains('/modify-Booking-Details') ? 'active' : ''}">Modify Booking Details</a></li>-->
+<!--                    <li><a th:href="@{/view-Booking-Details}" th:classappend="${#request.servletPath.contains('/view-Booking-Details') ? 'active' : ''}">View Booking</a></li>-->
+<!--                    <li><a th:href="@{/viewBookingByNumber}" th:classappend="${#request.servletPath.contains('/viewBookingByNumber') ? 'active' : ''}">View Bookings by Mobile Number</a></li>-->
+<!--                    <li><a th:href="@{/viewBookingToCancel}" th:classappend="${#request.servletPath.contains('/viewBookingToCancel') ? 'active' : ''}">Cancel a Booking</a></li>-->
+<!--                </ul>-->
+
+                            <ul>
+                <li><a th:href="@{/book}" th:class="@{active}">Book Now</a></li>
+                <li><a th:href="@{/modify-Booking-Details}">Modify Booking Details</a></li>
+                <li><a th:href="@{/view-Booking-Details}">View Booking</a></li>
+                <li><a th:href="@{/viewBookingByNumber}">View Bookings by Mobile Number</a></li>
+                <li><a th:href="@{/viewBookingToCancel}">Cancel a Booking</a></li>
+            </ul>
+        </aside>
+
+        <!-- Form Container -->
+        <div th:class="@{booking-form-container}" >
+            <form th:action="@{/book}" METHOD="post" th:class="@{booking-form}"  >
+
+                <h1>Book your Parking Spot</h1>
+                <!-- Show confirmation message -->
+                <div th:if="${confirmationMessage}" th:class="@{alert alert-success}">
+                    <p th:text="${confirmationMessage}"></p>
+                </div>
+                <!-- Show error message -->
+                <div th:if="${errorMessage}" th:class="@{alert alert-danger}">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+
+                <div th:class="@{form-group}">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="John Doe" required />
+                </div>
+
+                <div th:class="@{form-group}">
+                    <label for="mobileNumber">Mobile Number</label>
+                    <input type="tel" id="mobileNumber" name="mobileNumber" placeholder="Enter mobile number" required />
+                </div>
+
+                <div th:class="@{form-group}">
+                    <label for="parkingSpotId">Select Parking Spot</label>
+<!--                    <select id="parkingSpot" name="parkingSpot">-->
+<!--                        <option value="PS1">Spot Id: PS1 - Downtown, 5th Avenue (indoor)</option>-->
+<!--                        <option value="PS2">Spot Id: PS2 - Central Park, 8th Avenue (outdoor)</option>-->
+<!--                        <option value="PS2">Spot Id: PS3 - Airport Terminal, West Wing (indoor)</option>-->
+<!--                        <option value="PS3">Spot Id: PS4 - Mall Parking, Main Street (covered)</option>-->
+<!--                        <option value="PS4">Spot Id: PS5 - Hospital Parking, Elm Street (outdoor)</option>-->
+<!--                    </select>-->
+
+                    <select id="parkingSpotId" name="parkingSpotId" required>
+                        <option value="" disabled selected>Select a parking spot</option>
+                    <th:block th:each="spot : ${parkingSpots}">
+                        <option th:value="${spot.spotId}" th:text="'Spot Id: ' + ${spot.spotId} + ' - ' + ${spot.location}"
+                                th:data-price="${spot.pricePerHour}"></option>
+                    </th:block>
+                </select>
+                </div>
+
+<!--                <div class="form-group">-->
+<!--                    <label for="duration">Select Duration (Hours)</label>-->
+<!--                    <select id="duration" name="duration">-->
+<!--                        <option>1 Hour</option>-->
+<!--                        <option>2 Hours</option>-->
+<!--                        <option>3 Hours</option>-->
+<!--                    </select>-->
+<!--                </div>-->
+                <div th:class="@{form-group}">
+                    <label for="duration">Enter Duration (Hours)</label>
+                    <input type="number" id="duration" name="duration" min="1" max="24" step="1" placeholder="Enter duration in hours" required onchange="updatePrice()">
+                </div>
+
+
+                <div th:class="@{form-group}">
+                    <label for="startTime">Select Start Time</label>
+                    <input type="datetime-local" id="startTime" name="startTime" />
+                </div>
+
+                <div th:class="@{form-group}">
+                    <label for="price">Estimated Price</label>
+                    <input type="text" id="price" name="price" value="100.00" readonly />
+                </div>
+
+                <div th:class="@{form-group}">
+                    <label for="paymentMethod">Payment Method</label>
+                    <select id="paymentMethod" name="paymentMethod">
+                        <option>Pay on Spot</option>
+                        <option>Online Payment</option>
+                    </select>
+                </div>
+
+                <button type="submit" th:class="@{button}" >Confirm Booking</button>
+<!--                onclick="showConfirmationPage(event)"-->
+            </form>
+            <!-- Confirmation Page -->
+            <div id="confirmationPage" th:class="@{confirmation-page}" style="display: none;">
+                <h2 >Your Booking has been Confirmed!</h2>
+                <p>Thank you for booking a parking spot with us. We have received your booking details:</p>
+                <ul id="bookingSummary">
+                    <!-- The booking details will be dynamically added here -->
+                </ul>
+                <p><strong>Payment Method:</strong> <span id="paymentMethodSummary"></span></p>
+            </div>
+        </div>
+        </div>
+
+
+</main>
+
+
+<script th:src="@{/js/script.js}" >
+
+
+</script>
+</body>
+</html>
+</body>
+</html>

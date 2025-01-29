@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Quick Park Assist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+    />
+    <link th:href="@{/css/homeStyle.css}" rel="stylesheet" />
+
+
+    <style>
+        .active{
+          background-color: #ff6f3c;
+          color: white;
+        }
+    </style>
+</head>
+
+<body class="hero-area">
+<div class="bg-box">
+    <img th:src="@{/images/slider-bg.jpg}" alt="" />
+</div>
+
+<!-- Header section starts -->
+<header class="header_section">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+            <a class="navbar-brand" href="/" th:href="@{/}">
+            <span>
+              Quick Park Assist
+            </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class=""> </span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/'} ? 'active'">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item"
+                        th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                        <a class="nav-link"
+                           th:href="@{/users}">
+                            View Profile
+
+                        </a>
+                    </li>
+
+                    <li class="nav-item active"
+                        th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+                        <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+                    </li>
+
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+                        <a class="nav-link"
+                           th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/addAddonServices' :  '/viewAllAddonServices'">
+                            Addon Services
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Authentication Section -->
+                <!-- Authentication Section -->
+                <ul class="navbar-nav ml-auto">
+                    <li th:if="${#authentication.authenticated}" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user"></i> <span th:text="${#authentication.name}">User</span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                        </div>
+                    </li>
+                    <li th:if="${!#authentication.authenticated}" class="nav-item">
+                        <a class="nav-link" th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a>
+                    </li>
+                </ul>
+
+
+            </div>
+        </nav>
+    </div>
+</header>
+<!-- End header section -->
+<script>
+    function updateProfile() {
+      // Redirect to the profile update page
+      window.location.href = '/updateProfile';
+  }
+
+  function confirmLogout() {
+      // Show the logout confirmation modal
+      $('#logoutConfirmationModal').modal('show');
+  }
+
+</script>
+
+<!-- About Section -->
+<div class="container-fluid m-5" >
+    <div class="row  my-5">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3 bg-dark p-5">
+            <h3 style="color: white;">Parking Spots</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active text-light"
+                       th:href="@{/spot-management}"
+                       onclick="toggleForm('addNewSpotForm')">
+                        Add New Parking or Charging Spot                    </a>
+
+                </li>
+                <li class="nav-item">
+                    <a
+                            class="nav-link text-light"
+                            th:href="@{/search}"
+                            onclick="toggleForm('searchSpotForm')"
+                    >Search for Available Spots</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a
+                            class="nav-link text-light"
+                            th:href="@{/available}"
+                            onclick="toggleForm('viewSpotFrom')"
+                    >View Available Spots</a
+                    >
+                </li>
+
+                <li class="nav-item" th:if="${#authentication.authenticated}">
+
+
+                    <a th:href="@{/edit}"  class="nav-link text-light"
+
+                       onclick="toggleForm('modifySpotForm')">Modify Parking Spot</a>
+
+
+                </li>
+                <li class="nav-item">
+                    <a
+                            class="nav-link text-light"
+                            th:href="@{/remove}"
+                            onclick="toggleForm('removeSpotForm')"
+                    >Remove Unavailable Spot</a
+                    >
+                </li>
+            </ul>
+        </div>
+
+
+        <!-- Forms Section -->
+        <div class="col-md-8 bg-light py-5">
+            <div class="container my-4" style="max-height: 400px; overflow-y: auto;">
+
+          <!-- Add New Parking Spot Form -->
+            <div class="form-container">
+                <div id="success-message" th:if="${message}" th:class="@{alert alert-success}">
+                    <p th:text="${message}"></p>
+                </div>
+                <h2 class="form-header">Add New Parking or Charging Spot</h2>
+                <form th:action="@{/addSpot}" method="post" class="">
+                    <div class="row mb-3">
+                        <label for="spotName" class="col-md-3 col-form-label">Spot Name</label>
+                        <div class="col">
+                            <input type="text" id="spotName" name="spotName" class="form-control" placeholder="Spot Name" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="location" class="col-md-3 col-form-label">Location</label>
+                        <div class="col">
+                            <input type="text" id="location" name="location" class="form-control" placeholder="Location" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="availability" class="col-md-3 col-form-label">Availability</label>
+                        <div class="col">
+                            <select id="availability" name="availability" class="form-control" required>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="pricePerHour" class="col-md-3 col-form-label">Price per Hour</label>
+                        <div class="col">
+                            <input type="number" id="pricePerHour" step="0.01" name="pricePerHour" class="form-control" placeholder="Price per Hour" required>
+                        </div>
+                    </div>
+					<div class="row mb-3">
+										    <label for="station" class="col-md-3 col-form-label">Station</label>
+										    <div class="col">
+										        <input
+										            type="text"
+										            id="station"
+										            name="station"
+										            class="form-control"
+										            placeholder="Station Name"
+										            required
+										        />
+										    </div>
+										</div>
+										<div class="row mb-3">
+										    <label for="slot" class="col-md-3 col-form-label">Slot</label>
+										    <div class="col">
+										        <input
+										            type="number"
+										            id="slot"
+										            name="slot"
+										            class="form-control"
+										            placeholder="Slot Number"
+										            required
+										        />
+										    </div>
+										</div>
+                    <div class="row mb-3">
+                        <label for="spotType" class="col-md-3 col-form-label">Spot Type</label>
+                        <div class="col">
+                            <select id="spotType" name="spotType" class="form-control" required>
+                                <option value="normal">Normal Parking</option>
+                                <option value="ev">EV Charging Spot</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3" id="chargerTypeRow" style="display: none;">
+                        <label for="chargerType" class="col-md-3 col-form-label">Charger Type</label>
+                        <div class="col">
+                            <select id="chargerType" name="chargerType" class="form-control">
+                                <option value="type2">Type 2</option>
+                                <option value="ccs">CCS</option>
+                                <option value="chademo">CHAdeMO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3" id="powerCapacityRow" style="display: none;">
+                        <label for="powerCapacity" class="col-md-3 col-form-label">Power Capacity (kW)</label>
+                        <div class="col">
+                            <input type="number" id="powerCapacity" name="powerCapacity" class="form-control" placeholder="Power Capacity in kW">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary">Add Spot</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+                </div>
+            </div>
+        </div>
+
+    
+</div>
+    <script>
+        document.getElementById('spotType').addEventListener('change', function () {
+            const chargerTypeRow = document.getElementById('chargerTypeRow');
+            const powerCapacityRow = document.getElementById('powerCapacityRow');
+          const formContainer = document.querySelector('.form-container'); // Form container element
+
+            if (this.value === 'ev') {
+                chargerTypeRow.style.display = 'flex';
+                powerCapacityRow.style.display = 'flex';
+// Apply the class to make the form smaller and scrollable
+            formContainer.classList.add('scrollable-form');
+            } else {
+                chargerTypeRow.style.display = 'none';
+                powerCapacityRow.style.display = 'none';
+                  // Remove the class when EV is not selected
+            formContainer.classList.remove('scrollable-form');
+            }
+        });
+    </script>
+
+    <script>
+      function toggleForm(formId) {
+  // Hide all forms
+  const forms = document.querySelectorAll("form");
+  forms.forEach((form) => (form.style.display = "none"));
+
+  // Show the selected form
+  const selectedForm = document.getElementById(formId);
+  if (selectedForm) {
+    selectedForm.style.display = "block";
+  }
+}
+         // Wait for the page to load
+    window.onload = function() {
+        const message = document.getElementById('success-message');
+        if (message) {
+            // Hide the message after 3 seconds (3000 milliseconds)
+            setTimeout(() => {
+                message.style.transition = "opacity 0.5s ease";
+                message.style.opacity = "0";
+                // Remove the message from the DOM after fade-out
+                setTimeout(() => {
+                    message.remove();
+                }, 500);
+            }, 2000);
+        }
+    }
+    </script>
+
+</script>
+<!-- jQery -->
+<script src="js/jquery-3.4.1.min.js"></script>
+<!-- popper js -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
+</script>
+<!-- nice select -->
+<script src="js/jquery.nice-select.min.js"></script>
+<!-- bootstrap js -->
+<script src="js/bootstrap.js"></script>
+    <!-- Bootstrap 5 Bundle (Includes Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Owl Carousel (if needed) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <!-- Nice Select (if needed) -->
+    <script th:src="@{js/jquery.nice-select.min.js}"></script>
+
+    <!-- Custom JS -->
+    <script th:src="@{js/custom.js}"></script>
+  </body>
+
+</html>

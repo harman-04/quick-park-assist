@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Park Assist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+    />
+    <link th:href="@{/css/homeStyle.css}" rel="stylesheet" />
+<!--    <link rel="stylesheet" th:href="@{/css/spotbooking/style.css}">-->
+    <style>  .active{
+      background-color: #ff6f3c;
+      color: white;
+    }</style>
+
+</head>
+
+<body th:class="@{hero-area}">
+<div th:class="@{bg-box}">
+    <img th:src="@{/images/slider-bg.jpg}" alt="Background Image" />
+</div>
+<header th:class="@{header_section}">
+
+    <div th:class="@{container-fluid}">
+        <!--        <h1 th:class="@{logo}">SMART PARKING SPOTS</h1>-->
+        <nav th:class="@{navbar navbar-expand-lg custom_nav-container}">
+            <a class="navbar-brand" href="/" th:href="@{/}">
+            <span>
+              Quick Park Assist
+            </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class=""> </span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <ul th:class="@{navbar-nav}">
+                    <li th:class="@{nav-item}"><a th:href="@{/}" th:class="@{nav-link}">HOME</a></li>
+                    <li class="nav-item"
+                        th:classappend="${#request.requestURI == '/users'} ? 'active'">
+                        <a class="nav-link"
+                           th:href="@{/registration}">
+                            <span sec:authorize="isAnonymous()">Registration</span>
+                            <span sec:authorize="isAuthenticated()">Add Vehicle</span>
+
+                        </a>
+                    </li>
+<!--                    <li th:class="@{nav-item}"><a th:href="@{/registration}" th:class="@{nav-link}">REGISTRATION</a></li>-->
+                    <li class="nav-item" th:if="${user != null and user.role == 'SPOT_OWNER'}"
+                        th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+                        <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+                    </li>
+                    <li th:class="@{nav-item}"><a th:href="@{/booking}" th:class="@{active nav-link}">BOOKING</a></li>
+                    <li th:class="@{nav-item}"><a th:href="@{/viewAllAddonServices}" th:class="@{nav-link}">ADDON SERVICES</a></li>
+                    <li th:class="@{nav-item}"><a th:href="@{/reservations}" th:class="@{nav-link}">EV CHARGING</a></li>
+                </ul>
+                <!-- Authentication Section -->
+                <ul class="navbar-nav ms-auto">
+                    <li th:if="${#authentication.authenticated}" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-user"></i> <span th:text="${#authentication.name}">User</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                        </div>
+                    </li>
+                    <li th:if="${!#authentication.authenticated}" class="nav-item">
+                        <a class="nav-link" th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+    </div>
+</header>
+<!-- End header section -->
+<script>
+    function updateProfile() {
+      // Redirect to the profile update page
+      window.location.href = '/updateProfile';
+  }
+
+  function confirmLogout() {
+      // Show the logout confirmation modal
+      $('#logoutConfirmationModal').modal('show');
+  }
+
+</script>
+<div class="container-fluid m-5" >
+    <div class="row  my-5">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3 bg-dark p-5">
+    <h3 class="text-white">Book a Spot</h3>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link text-light" th:href="@{/book}" onclick="toggleForm('bookNowForm')">Book Now</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light active" th:href="@{/modify-Booking-Details}" onclick="toggleForm('modifyBookingForm')">Modify Booking Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light" th:href="@{/view-Booking-Details}" onclick="toggleForm('viewBookingForm')">View Booking</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light" th:href="@{/viewBookingByNumber}" onclick="toggleForm('viewByNumberForm')">View Bookings by Mobile Number</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light" th:href="@{/viewBookingToCancel}" onclick="toggleForm('cancelBookingForm')">Cancel a Booking</a>
+        </li>
+
+    </ul>
+</div>
+
+            <!-- Content Section -->
+            <div class="col-md-8 bg-light py-5">
+                <h3 class="text-dark">Modify Your Bookings</h3>
+
+                <!-- Success Alert -->
+                <div class="alert alert-success" th:if="${message}">
+                    <p th:text="${message}"></p>
+                </div>
+
+                <!-- Table -->
+                <div class="table-responsive my-4">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Mobile Number</th>
+                            <th>Parking Spot</th>
+                            <th>Duration (Hours)</th>
+                            <th>Start Time</th>
+                            <th>Price</th>
+                            <th>Payment Method</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="booking : ${bookings}">
+                            <tr>
+                                <td th:text="${booking.fullName}"></td>
+                                <td th:text="${booking.mobileNumber}"></td>
+                                <td th:text="${booking.location}"></td>
+                                <td th:text="${booking.duration}"></td>
+                                <td th:text="${booking.startTime}"></td>
+                                <td th:text="${booking.price}"></td>
+                                <td th:text="${booking.paymentMethod}"></td>
+                                <td th:text="${booking.status}"></td>
+                                <td>
+                                    <a th:href="@{/editBooking/{id}(id=${booking.id})}" class="btn btn-warning btn-sm">Edit</a>
+                                </td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<script th:src="@{/js/script.js}"></script>
+<script>
+    function toggleForm(formId) {
+// Hide all forms
+const forms = document.querySelectorAll("form");
+forms.forEach((form) => (form.style.display = "none"));
+
+// Show the selected form
+const selectedForm = document.getElementById(formId);
+if (selectedForm) {
+  selectedForm.style.display = "block";
+}
+}
+
+</script>
+
+<!-- Bootstrap 5 Bundle (Includes Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Owl Carousel (if needed) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<!-- Nice Select (if needed) -->
+<script th:src="@{js/jquery.nice-select.min.js}"></script>
+
+<!-- Custom JS -->
+<script th:src="@{js/custom.js}"></script>
+
+</body>
+</html>

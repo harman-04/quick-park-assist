@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Quick Park Assist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+    />
+    <link th:href="@{/css/homeStyle.css}" rel="stylesheet" />
+
+
+    <style>
+        .active{
+          background-color: #ff6f3c;
+          color: white;
+        }
+    </style>
+</head>
+
+<body class="hero-area">
+<div class="bg-box">
+    <img th:src="@{/images/slider-bg.jpg}" alt="" />
+</div>
+
+<!-- Header section starts -->
+<header class="header_section">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+            <a class="navbar-brand" href="/" th:href="@{/}">
+            <span>
+              Quick Park Assist
+            </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class=""> </span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/'} ? 'active'">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item"
+                        th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                        <a class="nav-link"
+                           th:href="@{/registration}">
+                            <span sec:authorize="isAnonymous()">Registration</span>
+                            <span sec:authorize="isAuthenticated()">Add Vehicle</span>
+
+                        </a>
+                    </li>
+
+                    <li class="nav-item" th:if="${user != null and user.role == 'SPOT_OWNER'}"
+                        th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+                        <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+                    </li>
+
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/booking'} ? 'active'">
+                        <a class="nav-link"
+                           th:href="${user != null and user.availability != 'ACTIVE'} ? '/' : '/booking'">
+                            Booking
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+
+
+                        <a class="nav-link"
+                           th:if="${  #authentication.principal != 'anonymousUser' && user.availability != 'DE-ACTIVATED'}"
+                           th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/addAddonServices' :  '/viewAllAddonServices'">
+                            Addon Services
+                        </a>
+
+                        <a class="nav-link" th:if="${#authentication.principal == 'anonymousUser'}" th:href="@{'/'}">Addon Services</a>
+                    </li>
+
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/reservations'} ? 'active'">
+                        <a class="nav-link"
+                           th:href="${user != null and user.availability != 'ACTIVE'} ? '/' : '/reservations'">
+                            Ev charge
+                        </a>
+                    </li>
+
+                </ul>
+
+                <!-- Authentication Section -->
+                <!-- Authentication Section -->
+                <ul class="navbar-nav ml-auto">
+                    <li th:if="${#authentication.authenticated}" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user"></i> <span th:text="${#authentication.name}">User</span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                        </div>
+                    </li>
+                    <li th:if="${!#authentication.authenticated}" class="nav-item">
+                        <a class="nav-link" th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a>
+                    </li>
+                </ul>
+
+
+            </div>
+        </nav>
+    </div>
+</header>
+<!-- End header section -->
+
+<!-- About Section -->
+<div class="container-fluid m-5" >
+    <div class="row  my-5">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3 bg-dark p-5">
+            <h3 style="color: white;">Parking Spots</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active text-light"
+                       th:href="@{/registration}"
+                       onclick="toggleForm('addNewSpotForm')">
+                        <span sec:authorize="isAnonymous()">New User Registration</span>
+                        <span sec:authorize="isAuthenticated()">Add Vehicle</span>
+                    </a>
+
+                </li>
+                <li class="nav-item" th:if="${#authentication.principal != 'anonymousUser'}">
+                    <a
+                            class="nav-link text-light"
+                            th:href="@{/users}"
+                            onclick="toggleForm('searchSpotForm')"
+                    >View User Profiles</a>
+                </li>
+
+
+                <!-- View User Vehicles -->
+                <li class="nav-item" th:if="${#authentication.principal != 'anonymousUser'}">
+                    <a
+                            class="nav-link text-light"
+                            th:href="@{/view-vehicle}"
+                            onclick="toggleForm('userVehiclesFrom')"
+                    >View User Vehicles</a>
+                </li>
+
+                <!-- Update User Profile -->
+                <li class="nav-item" th:if="${#authentication.principal != 'anonymousUser'}">
+                    <a
+                            th:href="@{/edit/{email}(email=${#authentication.name})}"
+                            class="nav-link text-light"
+                            onclick="toggleForm('modifySpotForm')"
+                    >Update User Profile</a>
+                </li>
+
+                <!-- Deactivate/Delete Account -->
+                <li class="nav-item" th:if="${#authentication.principal != 'anonymousUser'}">
+                    <a
+                            class="nav-link text-light"
+                            th:href="@{/delete}"
+                            onclick="toggleForm('removeSpotForm')"
+                    >Deactivate/Delete Account</a>
+                </li>
+            </ul>
+        </div>
+        <!-- Forms Section -->
+        <div class="col-md-8 bg-light py-5 needs-validation">
+            <!-- Add New Parking Spot Form -->
+            <div th:if="${!isLoggedIn}" class="container" style="max-height: 400px; overflow-y: auto;">
+                <h3 class=" mb-4">Create Your Account</h3>
+
+                <div th:if="${param.success}">
+                    <div class="alert alert-info">You've successfully registered to our awesome app!</div>
+                </div>
+
+                <div th:if="${param.error}">
+                    <div class="alert alert-danger ">
+                        Email already in use. Please choose a different one.</div>
+                </div>
+
+
+                <form th:action="@{/registration}" method="post" th:object="${user}">
+                    <!-- Full Name -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="fullName">Full Name</label>
+                        <div class="col-sm-9">
+                            <input id="fullName" class="form-control" th:field="*{fullName}" required autofocus="autofocus" minlength="3" maxlength="100" placeholder="Enter your full name" />
+                            <div class="invalid-feedback">Please provide a valid name (between 3 and 100 characters).</div>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="email">Email</label>
+                        <div class="col-sm-9">
+                            <input type="email" id="email" class="form-control" th:field="*{email}" required placeholder="Enter your email address" />
+                            <div class="invalid-feedback">Please provide a valid email address.</div>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="password">Password</label>
+                        <div class="col-sm-9">
+                            <input id="password" class="form-control" type="password" th:field="*{password}" required placeholder="Create a password"/>
+                            <span id="password-error" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Availability Status -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="availabilityYes">Availability</label>
+                        <div class="col-sm-9">
+                            <div class="form-check form-check-inline">
+                                <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        id="availabilityYes"
+                                        name="Availability"
+                                        value="ACTIVE"
+                                        th:field="*{Availability}"
+                                        required />
+                                <label class="form-check-label" for="availabilityYes">Active</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="phoneNumber">Phone Number</label>
+                        <div class="col-sm-9">
+                            <input
+                                    id="phoneNumber"
+                                    class="form-control"
+                                    th:field="*{phoneNumber}"
+                                    required
+                                    minlength="10"
+                                    maxlength="15"
+                                    placeholder="Enter your phone number"
+                                    pattern="^\d{10,15}$"
+                            />
+                            <div class="invalid-feedback">Please provide a valid phone number (10 to 15 digits).</div>
+
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="address">Address</label>
+                        <div class="col-sm-9">
+                            <input id="address" class="form-control" th:field="*{address}" required minlength="10" maxlength="255" placeholder="Enter your home address"/>
+                            <div class="invalid-feedback">Please provide a valid address (between 10 and 255 characters).</div>
+                        </div>
+                    </div>
+
+
+                    <!-- Role Selection Dropdown -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="role">Role</label>
+                        <div class="col-sm-9">
+                            <select id="role" class="form-control" th:field="*{role}" required>
+                                <option value="VEHICLE_OWNER">Vehicle owner</option>
+                                <option value="SPOT_OWNER">Parking Spot owner</option>
+                                <option value="DRIVER">Driver</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <!-- Submit Button -->
+                    <div class="form-group row">
+                        <div class="col-sm-9 offset-sm-3">
+                            <button type="submit" class="btn btn-success" id="submitBtn">Register</button>
+                            <span>Already registered? <a href="/" th:href="@{/}">Login here</a></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+
+            <!-- Add New Vehicle Form -->
+            <div th:if="${isLoggedIn}" class="container" style="max-height: 400px; overflow-y: auto;">
+                <h3 class=" mb-4">Register Your Vehicle</h3>
+
+                <div th:if="${message}" class="alert alert-success">
+                    <p th:text="${message}"></p>
+                </div>
+
+                <form th:action="@{/add-vehicle}" method="post" th:object="${vehicle}">
+                    <!-- Vehicle Number -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="vehicleNumber">Vehicle Number</label>
+                        <div class="col-sm-9">
+                            <input id="vehicleNumber" class="form-control" th:field="*{vehicleNumber}" required minlength="6" maxlength="50" placeholder="Enter your vehicle number"/>
+                            <div class="invalid-feedback">Please provide a valid vehicle number (between 6 and 50 characters).</div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Model -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="vehicleModel">Vehicle Model</label>
+                        <div class="col-sm-9">
+                            <input id="vehicleModel" class="form-control" th:field="*{vehicleModel}" required placeholder="Enter your vehicle model" />
+                            <div class="invalid-feedback">Please provide the vehicle model.</div>
+                        </div>
+                    </div>
+
+
+                    <!-- Has Electric Vehicle -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="hasElectric">Has Electric Vehicle</label>
+                        <div class="col-sm-9">
+                            <select id="hasElectric" class="form-control" th:field="*{hasElectric}" required>
+                                <option value="NO">No</option>
+                                <option value="YES">Yes</option>
+                            </select>
+                            <div class="invalid-feedback">Please indicate if this is an electric vehicle.</div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-group row">
+                        <div class="col-sm-9 offset-sm-3">
+                            <button type="submit" class="btn btn-primary" id="submit">Add Vehicle</button>
+                            <a href="/view-vehicle" th:href="@{/view-vehicle}">
+                                <button type="button" class="btn btn-success mr-4" >View Vehicle</button>
+                            </a>
+                            <span><a href="/" th:href="@{/}">Back to Dashboard</a></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+            function updateProfile() {
+              // Redirect to the profile update page
+              window.location.href = '/updateProfile';
+          }
+
+          function confirmLogout() {
+              // Show the logout confirmation modal
+              $('#logoutConfirmationModal').modal('show');
+          }
+
+</script>
+
+<script>
+            (function () {
+              'use strict';
+              var forms = document.querySelectorAll('.needs-validation');
+              Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                  if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }
+                  form.classList.add('was-validated');
+                }, false);
+              });
+            })();
+
+</script>
+
+
+        <!--            validation for strong password-->
+<script>
+            const passwordInput = document.getElementById('password');
+            const errorSpan = document.getElementById('password-error');
+            const submitBtn = document.getElementById('submitBtn');
+
+            passwordInput.addEventListener('input', () => {
+              const password = passwordInput.value;
+
+              // Clear previous error messages
+              errorSpan.textContent = '';
+
+              // Basic validation (adjust to your requirements)
+              if (password.length < 8) {
+                errorSpan.textContent = 'Password must be at least 8 characters long.';
+                submitBtn.disabled = true; // Disable submit button
+              } else if (!/[A-Z]/.test(password)) {
+                errorSpan.textContent = 'Password must contain at least one uppercase letter.';
+                submitBtn.disabled = true;
+              } else if (!/[a-z]/.test(password)) {
+                errorSpan.textContent = 'Password must contain at least one lowercase letter.';
+                submitBtn.disabled = true;
+              } else if (!/\d/.test(password)) {
+                errorSpan.textContent = 'Password must contain at least one digit.';
+                submitBtn.disabled = true;
+              } else if (!/[!@#$%^&*()_+=-]/.test(password)) {
+                errorSpan.textContent = 'Password must contain at least one special character.';
+                submitBtn.disabled = true;
+              } else {
+                // If all conditions are met, enable the submit button
+                submitBtn.disabled = false;
+              }
+            });
+</script>
+
+<script>
+            function toggleForm(formId) {
+        // Hide all forms
+        const forms = document.querySelectorAll("form");
+        forms.forEach((form) => (form.style.display = "none"));
+
+        // Show the selected form
+        const selectedForm = document.getElementById(formId);
+        if (selectedForm) {
+          selectedForm.style.display = "block";
+        }
+      }
+
+</script>
+
+<script>
+            // Only redirect if the success message is shown
+if (document.querySelector('.alert-info')) {
+    // Redirect to login page after 5 seconds
+    setTimeout(function() {
+        window.location.href = '/';
+    }, 2000);  // 2000ms = 2 seconds
+}
+</script>
+
+<script>
+            document.getElementById("phoneNumber").addEventListener("input", function () {
+                const phoneNumberInput = this.value;
+                const phoneNumberPattern = /^\d{10,15}$/;
+
+                if (!phoneNumberPattern.test(phoneNumberInput)) {
+                    this.setCustomValidity("Please enter a valid phone number (10 to 15 digits).");
+                } else {
+                    this.setCustomValidity(""); // Clear error
+                }
+            });
+</script>
+
+        <!-- jQery -->
+        <script src="js/jquery-3.4.1.min.js"></script>
+        <!-- popper js -->
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
+        </script>
+        <!-- nice select -->
+        <script src="js/jquery.nice-select.min.js"></script>
+        <!-- bootstrap js -->
+        <script src="js/bootstrap.js"></script>
+        <!-- owl slider -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+        </script>
+        <!-- custom js -->
+        <script src="js/custom.js"></script>
+
+
+        <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        ></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

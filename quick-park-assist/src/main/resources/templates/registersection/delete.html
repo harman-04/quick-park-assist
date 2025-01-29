@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+  <head>
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Quick Park Assist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link th:href="@{/css/homeStyle.css}" rel="stylesheet" />
+
+    <link th:href="@{/css/delete-button.css}" rel="stylesheet" />
+    
+
+
+  </head>
+
+  <body class="hero-area">
+    <div class="bg-box">
+      <img th:src="@{/images/slider-bg.jpg}" alt="" />
+    </div>
+
+    <!-- Header section starts -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="/" th:href="@{/}">
+            <span>
+              Quick Park Assist
+            </span>
+          </a>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class=""> </span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+              <li class="nav-item" th:classappend="${#request.requestURI == '/'} ? 'active'">
+                <a class="nav-link" th:href="@{/}">Home</a>
+              </li>
+              <li class="nav-item active" th:if="${user.availability=='ACTIVE'}"
+                  th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                <a class="nav-link"
+                   th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/users' : '/registration'" >
+                  <span th:if="${user == null}">Registration</span>
+                  <span th:if="${user != null && user.role == 'SPOT_OWNER'  && user.availability != 'DE-ACTIVATED'}">View Profile</span>
+                  <span th:if="${user != null && user.role != 'SPOT_OWNER'  && user.availability != 'DE-ACTIVATED' }">Add Vehicle</span>
+                </a>
+              </li>
+
+              <li class="nav-item active " th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                <a class="nav-link" th:href="@{/edit/{email}(email=${user.email})}" th:if="${user!=null && user.availability !='ACTIVE'}" >Activate Account</a></li>
+
+
+              <li class="nav-item" th:if="${user != null and user.role == 'SPOT_OWNER' and user.availability != 'DE-ACTIVATED'}"
+                  th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+                <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+              </li>
+
+              <li class="nav-item"
+                  th:classappend="${#request.requestURI == '/why'} ? 'active'">
+                <a class="nav-link"
+                   th:href="${user == null or user.role == 'SPOT_OWNER'} ? '/users' : '/booking'"
+                   th:if="${user != null and user.role != 'SPOT_OWNER' and user.availability != 'DE-ACTIVATED'}">Booking</a>
+              </li>
+
+
+              <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+                <a class="nav-link"
+                   th:if="${  user == null or user.availability != 'DE-ACTIVATED'}"
+                   th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/addAddonServices' :  '/viewAllAddonServices'">
+                  Addon Services
+                </a>
+              </li>
+
+              <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+                <a class="nav-link"  th:href="${user == null or user.role == 'SPOT_OWNER'} ? '/users' : '/reservations'"     th:if="${user == null or user.role != 'SPOT_OWNER' and user.availability != 'DE-ACTIVATED'}">Ev charge</a>
+              </li>
+            </ul>
+
+            <!-- Authentication Section -->
+            <ul class="navbar-nav ms-auto">
+              <li th:if="${#authentication.authenticated}" class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa fa-user"></i> <span th:text="${#authentication.name}">User</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                </div>
+              </li>
+              <li th:if="${!#authentication.authenticated}" class="nav-item">
+                <a class="nav-link" th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a>
+              </li>
+            </ul>
+
+
+        </div>
+      </nav>
+    </div>
+  </header>
+    <!-- End header section -->
+<script>
+  function updateProfile() {
+    // Redirect to the profile update page
+    window.location.href = '/updateProfile';
+}
+
+function confirmLogout() {
+    // Show the logout confirmation modal
+    $('#logoutConfirmationModal').modal('show');
+}
+
+</script>
+    <!-- About Section -->
+    <div class="container-fluid m-5" >
+        <div class="row  my-5">
+          <!-- Sidebar Navigation -->
+          <div class="col-md-3 bg-dark p-5">
+            <h3 style="color: white;">Parking Spots</h3>
+            <ul class="nav flex-column">
+              <li class="nav-item" th:if="${user.role != 'SPOT_OWNER' && user.availability !='DE-ACTIVATED'}">
+                <a class="nav-link text-light"
+                   th:href="@{/registration}"
+                   onclick="toggleForm('addNewSpotForm')">
+                  <span sec:authorize="isAnonymous()">New User Registration</span>
+                  <span sec:authorize="isAuthenticated()">Add Vehicle</span>
+                </a>
+
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link text-light"
+                  th:href="@{/users}" 
+                  onclick="toggleForm('searchSpotForm')"
+                  >View User profiles</a
+                >
+              </li>
+              <li class="nav-item" th:if="${user.role != 'SPOT_OWNER' && user.availability !='DE-ACTIVATED'}">
+                <a
+                        class="nav-link text-light"
+                        th:href="@{/view-vehicle}"
+                        onclick="toggleForm('userVehiclesFrom')"
+                >View User Vehicles</a
+                >
+              </li>
+              <li class="nav-item" th:if="${#authentication.authenticated}">
+                
+
+                  <a th:href="@{/edit/{email}(email=${#authentication.name})}" class="nav-link text-light"
+                   
+                  onclick="toggleForm('modifySpotForm')">Update your profile</a>
+                  
+                
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link active text-light"
+                  th:href="@{/delete}" 
+                  onclick="toggleForm('removeSpotForm')"
+                  >    <span th:if="${user.availability !='DE-ACTIVATED'}">Deactivate/Delete account</span>
+                  <span th:if="${user.availability!='ACTIVE'}">Activate/Delete account</span>
+                </a
+                >
+              </li>
+            </ul>
+          </div>
+        <!-- Forms Section -->
+        <div class="col-md-8 bg-light py-5">
+            <!-- Add New Parking Spot Form -->
+            <div class="container p-5" style="max-height: 400px; overflow-y: auto;">
+              <span id="deletebutton">
+                <p>
+                  We truly miss having you as our valued customer and look forward to serving you again soon. 
+                  <span th:text="${#authentication.name}"></span>
+                </p>
+                <a th:href="@{/edit/{email}(email=${#authentication.name})}"  th:if="${user != null and user.availability == 'ACTIVE'}" class="nav-link text-dark">Deactivate Temporary</a>
+                <a th:href="@{/edit/{email}(email=${#authentication.name})}"
+                   class="nav-link text-dark"
+                   th:if="${user != null and user.availability != 'ACTIVE'}">
+   Activate Account
+</a>
+
+                <a th:href="@{/remove/{email}(email=${#authentication.name})}" class="nav-link text-dark" onclick="return confirmDeletion()">Delete permanently</a>
+              </span>
+            </div>
+          </div>
+
+
+        </div>
+    </div>
+          
+
+    <script>
+            function confirmDeletion() {
+              // Display an alert message
+              const confirmAction = confirm("Are you sure you want to delete your profile?");
+              // If the user clicks "OK", allow the link to proceed; otherwise, prevent it
+              return confirmAction;
+            }
+    </script>
+          
+    
+
+    <script>
+      function toggleForm(formId) {
+  // Hide all forms
+  const forms = document.querySelectorAll("form");
+  forms.forEach((form) => (form.style.display = "none"));
+
+  // Show the selected form
+  const selectedForm = document.getElementById(formId);
+  if (selectedForm) {
+    selectedForm.style.display = "block";
+  }
+}
+
+    </script>
+
+
+          <!-- Bootstrap 5 Bundle (Includes Popper.js) -->
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+          <!-- Owl Carousel (if needed) -->
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+          <!-- Nice Select (if needed) -->
+          <script th:src="@{js/jquery.nice-select.min.js}"></script>
+
+          <!-- Custom JS -->
+          <script th:src="@{js/custom.js}"></script>
+
+  </body>
+</html>

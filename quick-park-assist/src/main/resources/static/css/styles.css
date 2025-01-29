@@ -1,0 +1,147 @@
+
+
+
+
+
+/* forms style */
+  
+  /* Container */
+  .container {
+    margin-top: 30px;
+  }
+  
+  /* Navbar Link Styling */
+  .nav-link {
+    color: #fff !important;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Active Navbar Link */
+  .nav-link.active {
+    background-color: #ff6f3c !important; /* Green for active */
+    color: #fff !important;
+  }
+  
+  /* Navbar Link Hover Effect */
+  .nav-link:hover {
+    background-color: #ff6f3c !important; /* Dark blue on hover */
+    color: #fff !important;
+  }
+  
+  /* Navbar Styling */
+  .nav {
+    background-color: #343a40;
+    border-radius: 5px;
+  }
+  
+  /* Navbar Item Styling */
+  .nav-item {
+    margin-bottom: 8px;
+  }
+  
+  /* Main Content Column */
+  .col-md-9 {
+    padding: 10px;
+    background-color: #ffffff;
+   font-size: small;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
+  }
+  
+  /* Sidebar Column */
+  /* .col-md-3 {
+    background-color: #343a40;
+    padding: 20px;
+    border-radius: 10px;
+  } */
+  
+  /* Form Input Styling */
+  .form-control {
+    border-radius: 2px;
+    box-shadow: none;
+  }
+  
+  /* Button Styling */
+  .btn {
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Primary Button */
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+  }
+  
+  /* Hover for Primary Button */
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Danger Button */
+  .btn-danger {
+    background-color: #dc3545;
+    border: none;
+  }
+  
+  /* Hover for Danger Button */
+  .btn-danger:hover {
+    background-color: #c82333;
+  }
+  
+  /* Form Label Styling */
+  .form-label {
+    font-weight: bold;
+    color: #495057;
+  }
+  
+  /* Form Area Layout */
+  #formArea {
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+  }
+  
+  /* Hidden Elements */
+  .d-none {
+    display: none;
+  }
+  
+  /* Form Section Spacing */
+  .form-section {
+    margin-bottom: 30px;
+  }
+  
+  /* Header Styling */
+  h3, h5 {
+    color: #ffffff;
+  }
+  
+  h4 {
+    color: #343a40;
+  }
+  
+  h5 {
+    color: #495057;
+  }
+  
+  .col-md-12{
+    
+    text-align: center;
+    width: 40px;
+    
+  }
+  /* Form Area Section Header */
+  #formArea h4 {
+    margin-bottom: 20px;
+  }
+  
+
+
+  
+  
+  
+  
+  

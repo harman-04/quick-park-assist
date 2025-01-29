@@ -1,0 +1,40 @@
+ .card {
+      border-radius: 15px;
+      border: none;
+      width: 100%; /* Ensures the card takes up the full width available */
+      max-width: 700px; /* Increase the max width to make the card wider */
+      margin: 0 auto; /* Center the card horizontally */
+    }
+
+    .card-title {
+      font-size: 1.8rem; /* Increase the font size of the title */
+      font-weight: bold;
+    }
+
+    .card-text {
+      line-height: 1.6;
+      font-size: 1.2rem; /* Increase the font size for better readability */
+    }
+
+    .btn-warning {
+      background-color: #ff6f3c;
+      border-color: #ff6f3c;
+      color: white;
+    }
+
+    .alert {
+      background: linear-gradient(to right, #56ccf2, #155263);
+      color: white;
+      border-radius: 15px;
+      padding: 40px 25px; /* Increased padding */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1s ease-out;
+      width: 100%;
+      max-width: 900px; /* Make alert the same width as the card */
+      margin: 0 auto; /* Center the alert horizontally */
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }

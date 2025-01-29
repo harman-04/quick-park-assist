@@ -1,0 +1,488 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* The Body Background Styling */
+
+
+/* Header Styling */
+.header {
+    background: rgba(255, 255, 255, 0.1); /* More transparent white background */
+
+    color: #000000;
+    padding: 10px 0;
+    width: 100%;
+}
+
+.header .container {
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    color:white;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+}
+
+.header .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.header .navigation ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.header .navigation li {
+    margin-right: 20px;
+}
+
+.header .navigation a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.header .navigation a:hover {
+    color: #007bff;
+}
+
+/* Main container styling */
+.main {
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    height: calc(75vh - 120px); /* Full height minus the navbar height */
+    /*background-color: white; /* Main container background color */
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top:100px;
+    width: 90%;
+}
+
+/* Grid container styling */
+.grid-container {
+    display: flex;
+    width: 100%;
+    height:80vh;
+    max-width: 1200px; /* Limit the max width of the entire container */
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden; /* Ensures a clean edge between aside and form */
+}
+
+/* Sidebar styling */
+.aside {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    width: 20%;
+}
+
+.aside h2 {
+    text-align: center;
+    width: 100%;
+}
+
+.aside ul {
+    padding: 0px;
+    list-style-type: none;
+    width: 100%;
+}
+
+.aside li {
+    color: white;
+    margin-bottom: 10px;
+    text-align: left;
+    width: 100%;
+}
+
+.aside li a {
+    text-decoration: none;
+    color: white;
+}
+
+.aside li a:hover {
+
+
+    border-radius: 5px;
+}
+
+/*.active {*/
+/*    font-weight: bold;*/
+/*    background-color: green;*/
+/*    padding: 10px;*/
+/*    border-radius: 5px;*/
+/*}*/
+
+/* Form container styling */
+.booking-form-container {
+    background-color: white;
+    padding: 20px;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    overflow-y: auto; /* Enable vertical scrolling for the form */
+
+}
+
+.booking-form {
+    background-color: white;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    max-height: calc(80vh - 40px); /* Adjust for padding, keeps it within the grid-container height */
+        overflow-y: auto; /* Enable scrolling within the form */
+}
+
+.booking-form h1 {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px 5px 0 0;
+    font-size: 24px;
+}
+
+.booking-form .form-group {
+    margin-bottom: 20px;
+}
+
+.booking-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.booking-form input,
+.booking-form select{
+    width: 96%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+
+.booking-form .button {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.booking-form .button:hover {
+    background-color: #0056b3;
+}
+
+.confirmation-page {
+    display: none;
+    position: relative;
+    padding: 30px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.booking-form {
+    display: block;
+}
+
+.confirmation-page h2 {
+    color: green;
+    font-size: 28px;
+}
+
+.active{
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 2px;
+    background-color: #CC5500;
+}
+.hidden { display: none; }
+
+/*Identify booking by mobile number styling*/
+
+/* General Styles for the Form and Table */
+
+.view-booking-container {
+    background-color: #ffffff; /* White background for contrast */
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    font-family: Arial, sans-serif;
+    overflow-y: auto; /* Add this to allow scrolling */
+    max-height: 500px; /* Adjust the height to suit your design */
+}
+
+
+/*box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);*/
+
+
+/* Heading Styles */
+.view-booking-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Form Styling */
+.view-booking-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.view-booking-container label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.view-booking-container input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.view-booking-container button[type="submit"] {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.view-booking-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Table Styling */
+.view-booking-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.view-booking-container table th,
+.view-booking-container table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+}
+
+.view-booking-container table th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+}
+
+.view-booking-container table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.view-booking-container table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* No Bookings Message */
+.view-booking-container p {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+/*Modify Booking Detail Css*/
+.edit-booking-form {
+    background-color: white;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+     max-height: calc(80vh - 40px); /* Adjust for padding, keeps it within the grid-container height */
+            overflow-y: auto; /* Enable scrolling within the form */
+
+}
+.edit-booking-form h1 {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px 5px 0 0;
+    font-size: 24px;
+}
+.edit-booking-form label{
+    display: block;
+    font-weight: bold;
+}
+.edit-booking-form .form-group{
+ margin-bottom: 0px;
+}
+/*.edit-booking-form .form-group {*/
+/*    !*margin-bottom: 10px;*!*/
+/*}*/
+.edit-booking-form input,
+.edit-booking-form select {
+    width: 96%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.edit-booking-form button{
+        width: 100%;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+    margin-top:20px;
+
+}
+/*Modify Booking Details CSS*/
+/* Style for the "Edit" button */
+
+.edit a {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #007bff; /* Blue background */
+    color: #ffffff; /* White text */
+    text-decoration: none; /* Remove underline */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+    text-align: center; /* Center the text */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.edit a:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+.edit a:active {
+    background-color: #003f7f; /* Even darker blue when clicked */
+    transform: scale(0.95); /* Slight shrink effect */
+}
+
+/*CSS for Cancel-edit button*/
+.edit-cancel {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #dc3545; /* Red background for Cancel */
+    color: #ffffff; /* White text */
+    border: none; /* Remove default border */
+    text-decoration: none; /* Remove underline */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+    text-align: center; /* Center the text */
+    cursor: pointer; /* Show pointer cursor */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions for hover and click effects */
+}
+/* Hover and active state for the cancel button */
+.edit-cancel:hover {
+    background-color: #c82333; /* Darker red for hover */
+    transform: scale(1.05); /* Slightly increase the button size on hover */
+}
+
+/* Active state when button is clicked */
+.edit-cancel:active {
+    transform: scale(1); /* Reset size when clicked */
+}
+/*CSS for View Booking Table*/
+.main {
+    margin-top: 150px; /* Adjust based on the height of your navbar */
+    margin-left: 60px;
+    padding-top: 20px; /* Add padding to the top to avoid content being cut off */
+}
+
+.form-container {
+
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 1000px;
+    background: #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Add this to allow scrolling */
+    max-height: 500px; /* Adjust the height to suit your design */
+}
+.form-container h2{
+    text-align: center;
+    color: #1c0f05;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+table th,
+table td {
+    text-align: left;
+    padding: 8px;
+}
+
+table th {
+    background-color: #f4f4f4;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+/* Style for success alert */
+.alert {
+    text-align: center;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 5px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert p {
+    margin: 0;
+}
+
+/* Optional: Add smooth transition effect */
+.alert {
+    transition: all 0.3s ease;
+}
+
+.alert-success {
+    opacity: 1;
+}

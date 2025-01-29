@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Park Assist</title>
+  <!--      <link rel="stylesheet" th:href="@{/css/tailwind.min.css}">-->
+
+  <!--      <script src="https://cdn.tailwindcss.com"></script>-->
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+          rel="stylesheet"
+  />
+
+  <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous"
+  />
+  <link th:href="@{/css/homeStyle.css}" rel="stylesheet" />
+  <!--    <link rel="stylesheet" th:href="@{/css/spotbooking/style.css}">-->
+  <style>
+    html, body, header {
+    margin: 0;
+    padding: 0;
+  }
+
+    .active {
+  background-color: #ff6f3c;
+  color: white;
+}
+
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .table-container {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .modifyButton,
+    .deleteServiceButton,
+    .deleteBookingButton {
+      font-size: 0.875rem;
+    }
+
+    footer {
+      background-color: #343a40;
+      color: #fff;
+      padding: 1rem;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
+
+    footer a {
+      color: #00aaff;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+  </style>
+</head>
+
+<body>
+<!-- Background Image -->
+<div th:class="@{bg-box}">
+  <img th:src="@{/images/slider-bg.jpg}" alt="Background Image" />
+</div>
+
+<!-- Header -->
+<!-- Header section starts -->
+<header class="header_section">
+  <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg custom_nav-container">
+      <a class="navbar-brand" href="/" th:href="@{/}">
+            <span>
+              Quick Park Assist
+            </span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class=""> </span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item" th:classappend="${#request.requestURI == '/'} ? 'active'">
+            <a class="nav-link" th:href="@{/}">Home</a>
+          </li>
+          <li class="nav-item"
+              th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+            <a class="nav-link"
+               th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/users' : '/registration'">
+              <span th:if="${user == null}">Registration</span>
+              <span th:if="${user != null && user.role == 'SPOT_OWNER'}">View Profile</span>
+              <span th:if="${user != null && user.role != 'SPOT_OWNER' }">Add Vehicle</span>
+            </a>
+          </li>
+
+          <li class="nav-item" th:if="${user != null and user.role == 'SPOT_OWNER'}"
+              th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+            <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+          </li>
+
+          <li class="nav-item"
+              th:classappend="${#request.requestURI == '/why'} ? 'active'">
+            <a class="nav-link"
+               th:href="${user == null or user.role == 'SPOT_OWNER'} ? '/users' : '/booking'"
+               th:if="${user == null or user.role != 'SPOT_OWNER'}">Booking</a>
+          </li>
+
+          <li class="nav-item active" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+            <a class="nav-link "
+               th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/addAddonServices' :  '/viewAllAddonServices'">
+              Addon Services
+            </a>
+          </li>
+
+          <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+            <a class="nav-link"  th:href="${user == null or user.role == 'SPOT_OWNER'} ? '/users' : '/reservations'"   th:if="${user == null or user.role != 'SPOT_OWNER'}">Ev charge</a>
+          </li>
+        </ul>
+
+        <!-- Authentication Section -->
+        <!-- Authentication Section -->
+        <ul class="navbar-nav ml-auto">
+          <li th:if="${#authentication.authenticated}" class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-user"></i> <span th:text="${#authentication.name}">User</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+            </div>
+          </li>
+          <li th:if="${!#authentication.authenticated}" class="nav-item">
+            <a class="nav-link" th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- End header section -->
+<script>
+  function updateProfile() {
+    // Redirect to the profile update page
+    window.location.href = '/updateProfile';
+}
+
+function confirmLogout() {
+    // Show the logout confirmation modal
+    $('#logoutConfirmationModal').modal('show');
+}
+
+</script>
+
+
+
+
+<!-- About Section -->
+<div class="container-fluid m-5" >
+  <div class="row  my-5">
+    <!-- Sidebar Navigation -->
+    <div class="col-md-3 bg-dark p-5">
+      <h3 style="color: white;">Addon Services</h3>
+      <ul class="nav flex-column">
+        <li class="nav-item" th:if="${user.role == 'SPOT_OWNER'}">
+          <a class="nav-link   text-light"
+             th:href="@{/addAddonServices}"
+             onclick="toggleForm('addNewSpotForm')">
+            <span >Create new Addon Pack </span>
+
+          </a>
+
+        </li>
+
+
+        <li class="nav-item">
+          <a
+                  class="nav-link text-light"
+                  th:if="${user.role != 'SPOT_OWNER'}"
+                  th:href="@{/viewAllAddonServices}"
+                  onclick="toggleForm('removeSpotForm')"
+          >View all Addon Offers</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+                  class="nav-link active text-light"
+                  th:if="${user.role != 'SPOT_OWNER'}"
+                  th:href="@{/modifySelectedAddonServices}"
+                  onclick="toggleForm('userVehiclesFrom')"
+          >Modify Addon Details</a
+          >
+        </li>
+        <li class="nav-item"   th:if="${user.role == 'SPOT_OWNER'}">
+
+
+          <a th:href="@{/removeAddonServices}" class="nav-link  text-light"
+
+             onclick="toggleForm('modifySpotForm')">Modify/Remove addon pack</a>
+
+
+        </li>
+
+      </ul>
+    </div>
+
+
+
+
+    <!-- Addon Services Section -->
+    <div class="col-md-8 bg-light py-5">
+      <div class="container my-4" style="max-height: 350px; overflow-y: auto;">
+        <!-- Table for Addon Booking and Services -->
+        <h3 class="text-dark mb-4">Modify Selected Addon Services</h3>
+
+        <table class="table table-bordered table-hover">
+          <thead class="table-dark text-center">
+          <tr>
+            <th>#</th>
+            <th>Selected Service Info</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Loop through addon bookings -->
+          <tr th:each="bookingData, iterStat : ${addonBookingData}">
+            <!-- Serial Number -->
+            <td
+                    class="bg-secondary-light align-middle text-center"
+                    th:text="${iterStat.index + 1}"
+            ></td>
+
+            <!-- Nested table for services under this booking -->
+            <td>
+              <table class="table table-sm table-striped bg-light">
+                <thead class="table-grey text-center">
+                <tr>
+                  <th>Service Name</th>
+                  <th>Description</th>
+                  <th>Price</th>
+                  <th>Duration</th>
+                  <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="serviceData : ${bookingData.services}">
+                  <td th:text="${serviceData.service.name}"></td>
+                  <td th:text="${serviceData.service.description}"></td>
+                  <td th:text="${serviceData.service.price}"></td>
+                  <td th:text="${serviceData.service.duration}"></td>
+                  <td class="text-center">
+<!--                    <button-->
+<!--                            class="btn btn-sm btn-info mb-2"-->
+<!--                            th:attr="data-serviceid=${serviceData.service.serviceID}"-->
+<!--                            onclick="modifyPrice(this)"-->
+<!--                    >-->
+<!--                      Modify Price-->
+<!--                    </button>-->
+
+<!--                    <button-->
+<!--                            class="btn btn-sm btn-warning "-->
+<!--                            th:attr="data-serviceid=${serviceData.service.serviceID}"-->
+<!--                            onclick="modifyDuration(this)"-->
+<!--                    >-->
+<!--                      Modify Duration-->
+<!--                    </button>-->
+
+                    <button
+                            class="btn btn-sm btn-danger"
+                            th:attr="data-serviceid=${serviceData.service.serviceID}, data-bookingid=${bookingData.booking.addonServiceBookingID}"
+                            onclick="deleteService(this)"
+                    >
+                      Delete Service
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+              <!-- Delete Booking Button -->
+              <div class="text-center mt-3">
+                <button
+                        class="btn btn-danger btn-sm"
+                        th:attr="data-bookingid=${bookingData.booking.addonServiceBookingID}"
+                        onclick="deleteBooking(this)"
+                >
+                  Delete Entire Booking
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!--  &lt;!&ndash; Footer &ndash;&gt;-->
+<!--  <footer class="mt-5">-->
+<!--    <p>-->
+<!--      &copy; 2024 All Rights Reserved by-->
+<!--      <a href="#">Smart Parking Spots</a>-->
+<!--    </p>-->
+<!--  </footer>-->
+  <!-- Scripts -->
+  <script>
+    function modifyDuration(button) {
+      const serviceID = button.getAttribute("data-serviceid");
+      window.location.href = `/modifyAddonServiceDuration?serviceID=${serviceID}`;
+    }
+
+    function modifyPrice(button) {
+      const serviceID = button.getAttribute("data-serviceid");
+      window.location.href = `/modifyAddonService?serviceID=${serviceID}`;
+    }
+
+    function deleteService(button) {
+      const serviceID = button.getAttribute("data-serviceid");
+      const bookingID = button.getAttribute("data-bookingid");
+
+      if (confirm("Are you sure you want to delete this service?")) {
+        fetch("/deleteService", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `bookingID=${bookingID}&serviceID=${serviceID}`,
+        }).then((response) => {
+          if (response.redirected) {
+            window.location.href = response.url;
+          }
+        });
+      }
+    }
+
+    function deleteBooking(button) {
+      const bookingID = button.getAttribute("data-bookingid");
+
+      if (confirm("Are you sure you want to delete this entire booking?")) {
+        fetch("/deleteBooking", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `bookingID=${bookingID}`,
+        }).then((response) => {
+          if (response.redirected) {
+            window.location.href = response.url;
+          }
+        });
+      }
+    }
+  </script>
+
+  <!-- Bootstrap Bundle -->
+  <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <!-- jQery -->
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <!-- popper js -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
+  </script>
+  <!-- nice select -->
+  <script src="js/jquery.nice-select.min.js"></script>
+  <!-- bootstrap js -->
+  <script src="js/bootstrap.js"></script>
+  <!-- owl slider -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <!-- custom js -->
+  <script src="js/custom.js"></script>
+
+
+  <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

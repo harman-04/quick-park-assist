@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Quick Park Assist</title>
+    <link rel="icon" href="@{/favicon.ico}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+    />
+    <link th:href="@{/css/homeStyle.css}" rel="stylesheet" />
+<!--    <link rel="stylesheet" th:href="@{/css/spotbooking/style.css}">-->
+
+    <style>
+        .active{
+              background-color: #ff6f3c;
+              color: white;</style>
+</head>
+
+<body th:class="@{hero-area}">
+<div th:class="@{bg-box}">
+    <img th:src="@{/images/slider-bg.jpg}" alt="Background Image" />
+</div>
+<header th:class="@{header_section}">
+
+    <div th:class="@{container-fluid}">
+<!--        <h1 th:class="@{logo}">SMART PARKING SPOTS</h1>-->
+        <nav th:class="@{navbar navbar-expand-lg custom_nav-container}">
+            <a class="navbar-brand" href="/" th:href="@{/}">
+            <span>
+              Quick Park Assist
+            </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class=""> </span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <ul th:class="@{navbar-nav}">
+                <li th:class="@{nav-item}"><a th:href="@{/}" th:class="@{nav-link}">HOME</a></li>
+                <li class="nav-item"
+                    th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                    <a class="nav-link"
+                       th:href="@{/registration}">
+                        <span sec:authorize="isAnonymous()">Registration</span>
+                        <span sec:authorize="isAuthenticated()">Add Vehicle</span>
+
+                    </a>
+                </li>
+<!--                <li th:class="@{nav-item}"><a th:href="@{/registration}" th:class="@{nav-link}">REGISTRATION</a></li>-->
+                <li class="nav-item" th:if="${user != null and user.role == 'SPOT_OWNER'}"
+                    th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+                    <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+                </li>
+                <li th:class="@{nav-item}"><a th:href="@{/booking}" th:class="@{active nav-link}">BOOKING</a></li>
+                <li th:class="@{nav-item}"><a th:href="@{/viewAllAddonServices}" th:class="@{nav-link}">ADDON SERVICES</a></li>
+                <li th:class="@{nav-item}"><a th:href="@{/reservations}" th:class="@{nav-link}">EV CHARGING</a></li>
+            </ul>
+                <!-- Authentication Section -->
+                <ul class="navbar-nav ms-auto">
+                    <li th:if="${#authentication.authenticated}" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-user"></i> <span th:text="${#authentication.name}">User</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                        </div>
+                    </li>
+                    <li th:if="${!#authentication.authenticated}" class="nav-item">
+                        <a class="nav-link" th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+    </div>
+</header>
+<!-- End header section -->
+<script>
+    function updateProfile() {
+      // Redirect to the profile update page
+      window.location.href = '/updateProfile';
+  }
+
+  function confirmLogout() {
+      // Show the logout confirmation modal
+      $('#logoutConfirmationModal').modal('show');
+  }
+
+</script>
+<div class="container-fluid m-5" >
+    <div class="row  my-5">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3 bg-dark p-5">
+            <h3 class="text-white">Book a spot</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-light active" th:href="@{/book}" onclick="toggleForm('bookNowForm')">Book Now</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light " th:href="@{/modify-Booking-Details}" onclick="toggleForm('modifyBookingForm')">Modify Booking Details</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" th:href="@{/view-Booking-Details}" onclick="toggleForm('viewBookingForm')">View Booking</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" th:href="@{/viewBookingByNumber}" onclick="toggleForm('viewByNumberForm')">View Bookings by Mobile Number</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" th:href="@{/viewBookingToCancel}" onclick="toggleForm('cancelBookingForm')">Cancel a Booking</a>
+                </li>
+
+            </ul>
+        </div>
+
+        <!-- Form Container -->
+        <div class="col-md-8 bg-light py-5">
+            <div class="container" style="max-height: 450px; overflow-y: auto;">
+                <form th:action="@{/book}" method="post" th:class="@{booking-form}">
+                    <h3 class=" mb-4">Book Your Parking Spot</h3>
+
+                    <!-- Confirmation Message -->
+                    <div th:if="${confirmationMessage}" class="alert alert-success">
+                        <p th:text="${confirmationMessage}"></p>
+                    </div>
+                    <!-- Error Message -->
+                    <div th:if="${errorMessage}" class="alert alert-danger">
+                        <p th:text="${errorMessage}"></p>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="fullName">Full Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="fullName" name="fullName" class="form-control" placeholder="John Doe" required />
+                            <div class="invalid-feedback">Please enter your full name.</div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Number -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="mobileNumber">Mobile Number</label>
+                        <div class="col-sm-9">
+                            <input type="tel" id="mobileNumber" name="mobileNumber" class="form-control" placeholder="Enter mobile number" required />
+                            <div class="invalid-feedback">Please enter a valid mobile number.</div>
+                        </div>
+                    </div>
+
+                    <!-- Select Parking Spot -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="parkingSpotId">Parking Spot</label>
+                        <div class="col-sm-9">
+                            <select id="parkingSpotId" name="parkingSpotId" class="form-control" required>
+                                <option value="" disabled selected>Select a parking spot</option>
+                                <th:block th:each="spot : ${parkingSpots}">
+                                    <option th:value="${spot.spotId}" th:text="'Spot Id: ' + ${spot.spotId} + ' - ' + ${spot.location}"
+                                            th:data-price="${spot.pricePerHour}"></option>
+                                </th:block>
+                            </select>
+                            <div class="invalid-feedback">Please select a parking spot.</div>
+                        </div>
+                    </div>
+
+                    <!-- Select Vehicle -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="vehicleId">Vehicle</label>
+                        <div class="col-sm-9">
+                            <select id="vehicleId" name="vehicleId" class="form-control" required>
+                                <option value="" disabled selected>Select a vehicle</option>
+                                <th:block th:each="vehicle : ${vehicles}">
+                                    <option th:value="${vehicle.id}" th:text="${vehicle.vehicleModel} + ' - ' + ${vehicle.vehicleNumber}"></option>
+                                </th:block>
+                            </select>
+                            <div class="invalid-feedback">Please select your vehicle.</div>
+                        </div>
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="duration">Duration (Hours)</label>
+                        <div class="col-sm-9">
+                            <input type="number" id="duration" name="duration" class="form-control" min="1" max="24" step="1"
+                                   placeholder="Enter duration in hours" required onchange="updatePrice()" />
+                            <div class="invalid-feedback">Please enter a valid duration (1-24 hours).</div>
+                        </div>
+                    </div>
+
+                    <!-- Start Time -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="startTime">Start Time</label>
+                        <div class="col-sm-9">
+                            <input type="datetime-local" id="startTime" name="startTime" class="form-control" required />
+                            <div class="invalid-feedback">Please select a valid start time.</div>
+                        </div>
+                    </div>
+
+                    <!-- Estimated Price -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="price">Estimated Price</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="price" name="price" class="form-control" value="100.00" readonly />
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="paymentMethod">Payment Method</label>
+                        <div class="col-sm-9">
+                            <select id="paymentMethod" name="paymentMethod" class="form-control">
+                                <option>Pay on Spot</option>
+                                <option>Online Payment</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-group row">
+                        <div class="col-sm-9 offset-sm-3">
+                            <button type="submit" class="btn btn-primary btn-block">Confirm Booking</button>
+                        </div>
+                    </div>
+
+                    <!-- Add Vehicle Link -->
+                    <div class="form-group text-center mt-3">
+                        <span>Vehicle Not Found? <a href="/" th:href="@{/registration}">Add Vehicle</a></span>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+
+</div>
+<script th:src="@{/js/script.js}" ></script>
+<script>
+    function toggleForm(formId) {
+// Hide all forms
+const forms = document.querySelectorAll("form");
+forms.forEach((form) => (form.style.display = "none"));
+
+// Show the selected form
+const selectedForm = document.getElementById(formId);
+if (selectedForm) {
+  selectedForm.style.display = "block";
+}
+}
+
+</script>
+
+<!-- Bootstrap 5 Bundle (Includes Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Owl Carousel (if needed) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<!-- Nice Select (if needed) -->
+<script th:src="@{js/jquery.nice-select.min.js}"></script>
+
+<!-- Custom JS -->
+<script th:src="@{js/custom.js}"></script>
+
+</body>
+</html>
+</body>
+</html>

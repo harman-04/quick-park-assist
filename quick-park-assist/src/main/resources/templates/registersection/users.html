@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Quick Park Assist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" />
+    <link th:href="@{/css/homeStyle.css}" rel="stylesheet" />
+
+    <style>
+        .active {
+          background-color: #ff6f3c;
+          color: white;
+        }
+
+    </style>
+</head>
+
+<body class="hero-area">
+<div class="bg-box">
+    <img th:src="@{/images/slider-bg.jpg}" alt="" />
+</div>
+<!-- Header section starts -->
+<header class="header_section">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+            <a class="navbar-brand" href="/" th:href="@{/}">
+            <span>
+              Quick Park Assist
+            </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class=""> </span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/'} ? 'active'">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item active" th:if="${user.availability=='ACTIVE'}"
+                        th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                        <a class="nav-link"
+                           th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/users' : '/registration'" >
+                            <span th:if="${user == null}">Registration</span>
+                            <span th:if="${user != null && user.role == 'SPOT_OWNER'  && user.availability != 'DE-ACTIVATED'}">View Profile</span>
+                            <span th:if="${user != null && user.role != 'SPOT_OWNER'  && user.availability != 'DE-ACTIVATED' }">Add Vehicle</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item active " th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                        <a class="nav-link" th:href="@{/edit/{email}(email=${user.email})}" th:if="${user!=null && user.availability !='ACTIVE'}" >Activate Account</a></li>
+
+
+                    <li class="nav-item" th:if="${user != null and user.role == 'SPOT_OWNER' and user.availability != 'DE-ACTIVATED'}"
+                        th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+                        <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+                    </li>
+
+                    <li class="nav-item"
+                        th:classappend="${#request.requestURI == '/why'} ? 'active'">
+                        <a class="nav-link"
+                           th:href="${user == null or user.role == 'SPOT_OWNER'} ? '/users' : '/booking'"
+                           th:if="${user != null and user.role != 'SPOT_OWNER' and user.availability != 'DE-ACTIVATED'}">Booking</a>
+                    </li>
+
+
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+                        <a class="nav-link"
+                           th:if="${  user == null or user.availability != 'DE-ACTIVATED'}"
+                           th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/addAddonServices' :  '/viewAllAddonServices'">
+                            Addon Services
+                        </a>
+                    </li>
+
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+                        <a class="nav-link"  th:href="${user == null or user.role == 'SPOT_OWNER'} ? '/users' : '/reservations'"     th:if="${user == null or user.role != 'SPOT_OWNER' and user.availability != 'DE-ACTIVATED'}">Ev charge</a>
+                    </li>
+                </ul>
+
+                <!-- Authentication Section -->
+                <ul class="navbar-nav ml-auto">
+                    <li th:if="${#authentication.authenticated}" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user"></i> <span th:text="${#authentication.name}">User</span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                        </div>
+                    </li>
+                    <li th:if="${!#authentication.authenticated}" class="nav-item">
+                        <a class="nav-link" th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a>
+                    </li>
+                </ul>
+
+
+            </div>
+        </nav>
+    </div>
+</header>
+<!-- End header section -->
+
+<!-- About Section -->
+<div class="container-fluid m-5" >
+    <div class="row  my-5">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3 bg-dark p-5">
+            <h3 style="color: white;">Parking Spots</h3>
+            <ul class="nav flex-column ">
+                <li class="nav-item"
+                    th:if="${user.role != 'SPOT_OWNER' && user.availability !='DE-ACTIVATED'}">
+                    <a class="nav-link text-light"
+                       th:href="@{/registration}"
+                       onclick="toggleForm('addNewSpotForm')">
+                        <span sec:authorize="isAnonymous()">New User Registration</span>
+                        <span sec:authorize="isAuthenticated()" >Add Vehicle</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                            class="nav-link active text-light"
+                            th:href="@{/users}"
+                            onclick="toggleForm('searchSpotForm')"
+                    >View User profiles</a
+                    >
+                </li>
+                <li class="nav-item"
+                    th:if="${user.role != 'SPOT_OWNER' && user.availability !='DE-ACTIVATED'}">
+                    <a class="nav-link text-light"
+                       th:href="@{/view-vehicle}"
+                       onclick="toggleForm('userVehiclesForm')">
+                        View User Vehicles
+                    </a>
+                </li>
+
+
+                <li class="nav-item" th:if="${#authentication.authenticated}">
+
+
+                    <a th:href="@{/edit/{email}(email=${#authentication.name})}" class="nav-link text-light"
+
+                       onclick="toggleForm('modifySpotForm')">Update User profile</a>
+
+
+                </li>
+                <li class="nav-item">
+                    <a
+                            class="nav-link text-light"
+                            th:href="@{/delete}"
+                            onclick="toggleForm('removeSpotForm')"
+                    ><span th:if="${user.availability !='DE-ACTIVATED'}">Deactivate/Delete account</span>
+                        <span th:if="${user.availability!='ACTIVE'}">Activate/Delete account</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- User Profile Section -->
+        <div class="col-md-8 bg-light py-4 shadow-sm ">
+            <div class=" text-center mb-3">
+                <h3 class="text-primary">User Profile</h3>
+            </div>
+            <div class="px-4 py-3 ">
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    <strong>Full Name:</strong> <span th:text="${user.fullName}"></span>
+                </p>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    <strong>Email:</strong> <span th:text="${user.email}"></span>
+                </p>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    <strong>Status:</strong>
+                    <span th:text="${user.availability}"
+                          th:class="${user.availability == 'ACTIVE' ? 'text-success' : 'text-danger'}"></span>
+                </p>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    <strong>Phone:</strong> <span th:text="${user.phoneNumber}"></span>
+                </p>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    <strong>Address:</strong> <span th:text="${user.address}"></span>
+                </p>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                    <strong>Role:</strong> <span th:text="${user.role}"></span>
+                </p>
+            </div>
+
+            <div class="text-center mt-3">
+
+                <a  href="/edit/{email}"  th:href="@{/edit/{email}(email=${user.email})}"  class="btn btn-outline-primary mr-4">Edit</a>
+                <a href="/spot-management" class="btn btn-outline-success  mr-4" th:href="@{/spot-management}"
+                   th:if="${user.role == 'SPOT_OWNER' && user.availability !='DE-ACTIVATED'}">
+                    Add Spots
+                </a>
+
+                <a href="/addAddonServices"
+                   th:href="@{/addAddonServices}"
+                   class="btn btn-outline-info mr-4"
+                   th:if="${user.role == 'SPOT_OWNER' && user.availability !='DE-ACTIVATED'}">
+                    Create Addon Pack
+                </a>
+                <a href="/registration"
+                   th:href="@{/registration}"
+                   class="btn btn-outline-success mr-4"
+                  th:if="${user.role != 'SPOT_OWNER' && user.availability !='DE-ACTIVATED'}">
+                    Add Vehicles
+                </a>
+
+                <a href="/view-vehicle"
+                   th:href="@{/view-vehicle}"
+                   class="btn btn-outline-info mr-4"
+                   th:if="${user.role != 'SPOT_OWNER' && user.availability !='DE-ACTIVATED'}">
+                    View Vehicles
+                </a>
+
+                <a href="/" class="btn btn-outline-secondary">Home</a>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+<!-- JavaScript to fade out the message -->
+<script>
+    // Wait for the page to load
+    window.onload = function() {
+        // Select the message div
+        const messageDiv = document.getElementById('successMessage');
+
+        if (messageDiv) {
+            // Set timeout to fade out after 1 seconds (1000ms)
+            setTimeout(function() {
+                messageDiv.style.transition = "opacity 1s ease";
+                messageDiv.style.opacity = "0";
+
+                // Remove the div after fade-out
+                setTimeout(function() {
+                    messageDiv.style.display = "none";
+                }, 1000);  // Wait for the fade-out to complete
+            }, 1000);  // Delay before starting the fade
+        }
+    };
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+
+      .active{
+        background-color: #ff6f3c;
+        color: white;
+      }
+
+      #deletebutton {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Space between the links */
+  text-align: center;
+  align-items: center; /* Vertically align the text and links */
+  margin-top: 20px;
+}
+
+#deletebutton a {
+  background-color: #ff6f3c; /* Attractive color */
+  color: white;
+  padding: 10px 20px; /* Add padding for a better look */
+  text-align: center;
+  display: inline-block;
+  border-radius: 5px; /* Rounded corners */
+  text-decoration: none; /* Remove underline */
+  font-size: 16px; /* Increase font size for better readability */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+  transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+}
+
+#deletebutton a:hover {
+  background-color: #e65a2f; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+#deletebutton p {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+#deletebutton span {
+  font-size: larger;
+  font-weight: bold;
+  color: #ff6f3c;
+}
+

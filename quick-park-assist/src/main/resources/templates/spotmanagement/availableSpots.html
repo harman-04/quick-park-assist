@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Quick Park Assist</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+    />
+    <link th:href="@{/css/homeStyle.css}" rel="stylesheet" />
+
+
+    <style>
+        .active{
+          background-color: #ff6f3c;
+          color: white;
+        }
+    </style>
+</head>
+
+<body class="hero-area">
+<div class="bg-box">
+    <img th:src="@{/images/slider-bg.jpg}" alt="" />
+</div>
+
+<!-- Header section starts -->
+<header class="header_section">
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+            <a class="navbar-brand" href="/" th:href="@{/}">
+            <span>
+              Quick Park Assist
+            </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class=""> </span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/'} ? 'active'">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item"
+                        th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                        <a class="nav-link"
+                           th:href="@{/users}">
+                            View Profile
+
+                        </a>
+                    </li>
+
+                    <li class="nav-item active"
+                        th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+                        <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+                    </li>
+
+                    <!--                    <li class="nav-item" th:classappend="${#request.requestURI == '/why'} ? 'active'">-->
+                    <!--                        <a class="nav-link" th:href="@{/booking}">Booking</a>-->
+                    <!--                    </li>-->
+                    <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+                        <a class="nav-link"
+                           th:href="@{/addAddonServices}">
+                            Addon Services
+                        </a>
+                    </li>
+                    <!--                    <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">-->
+                    <!--                        <a class="nav-link" th:href="@{/reservations}">Ev charge</a>-->
+                    <!--                    </li>-->
+                </ul>
+
+                <!-- Authentication Section -->
+                <!-- Authentication Section -->
+                <ul class="navbar-nav ml-auto">
+                    <li th:if="${#authentication.authenticated}" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user"></i> <span th:text="${#authentication.name}">User</span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                        </div>
+                    </li>
+                    <li th:if="${!#authentication.authenticated}" class="nav-item">
+                        <a class="nav-link" th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a>
+                    </li>
+                </ul>
+
+
+            </div>
+        </nav>
+    </div>
+</header>
+<!-- End header section -->
+<script>
+    function updateProfile() {
+      // Redirect to the profile update page
+      window.location.href = '/updateProfile';
+  }
+
+  function confirmLogout() {
+      // Show the logout confirmation modal
+      $('#logoutConfirmationModal').modal('show');
+  }
+
+</script>
+
+<!-- About Section -->
+<div class="container-fluid m-5" >
+    <div class="row  my-5">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3 bg-dark p-5">
+            <h3 style="color: white;">Parking Spots</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link  text-light"
+                       th:href="@{/spot-management}"
+                       onclick="toggleForm('addNewSpotForm')">
+                        Add New Parking or Charging Spot                    </a>
+
+                </li>
+                <li class="nav-item">
+                    <a
+                            class="nav-link  text-light"
+                            th:href="@{/search}"
+                            onclick="toggleForm('searchSpotForm')"
+                    >Search for Available Spots</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a
+                            class="nav-link active text-light"
+                            th:href="@{/available}"
+                            onclick="toggleForm('viewSpotFrom')"
+                    >View Available Spots</a
+                    >
+                </li>
+
+                <li class="nav-item" th:if="${#authentication.authenticated}">
+
+
+                    <a th:href="@{/edit}"  class="nav-link text-light"
+
+                       onclick="toggleForm('modifySpotForm')">Modify Parking Spot</a>
+
+
+                </li>
+                <li class="nav-item">
+                    <a
+                            class="nav-link text-light"
+                            th:href="@{/remove}"
+                            onclick="toggleForm('removeSpotForm')"
+                    >Remove Unavailable Spot</a
+                    >
+                </li>
+            </ul>
+        </div>
+
+
+
+        <!-- Forms Section -->
+        <div class="col-md-8 bg-light py-5">
+            <div class="container my-4" style="max-height: 400px; overflow-y: auto;">
+          <!-- Add New Parking Spot Form -->
+          <div class="table-container" style="max-height: 300px; overflow-y: auto;">
+          <table class="table table-striped table-bordered table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Spot Name</th>
+                <th>Location</th>
+                <th>Price per Hour</th>
+				<th>Station</th>
+				<th>Slot</th>
+                <th>Spot Type</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="spot : ${availableSpots}">
+                <td th:text="${spot.spotName}"></td>
+                <td th:text="${spot.location}"></td>
+                <td th:text="${spot.pricePerHour}"></td>
+				<td th:text="${spot.station}"></td>
+				<td th:text="${spot.slot}"></td>
+                <td th:text="${spot.spotType}"></td>
+                <td>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editSpotModal" 
+                            th:data-id="${spot.spotId}" th:data-spotname="${spot.spotName}" th:data-location="${spot.location}"
+                            th:data-priceperhour="${spot.pricePerHour}" th:data-availability="${spot.availability}" th:data-slot="${spot.slot}" th:data-station="${spot.station}"
+                            th:data-spotType="${spot.spotType}">View</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div></div>
+    <!-- Modal for Editing Spot -->
+    <div class="modal fade" id="editSpotModal" tabindex="-1" aria-labelledby="editSpotModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSpotModalLabel">Edit Parking Spot</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/modifySpot}" method="post">
+                        <input type="hidden" id="editSpotId" name="id">
+                        <div class="mb-3">
+                            <label for="spotName" class="form-label">Spot Name</label>
+                            <input type="text" class="form-control" id="editSpotName" name="spotName" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="editLocation" name="location" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="availability" class="form-label">Availability</label>
+                            <select class="form-control" id="editAvailability" name="availability" disabled>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pricePerHour" class="form-label">Price per Hour</label>
+                            <input type="number" step="0.01" class="form-control" id="editPricePerHour" name="pricePerHour" disabled>
+                        </div>
+						<div class="mb-3">
+						      <label for="station" class="form-label">Station</label>
+						      <input type="text"  class="form-control" id="editStation" name="station" disabled>
+						 </div>
+						 
+						 <div class="mb-3">
+						       <label for="slot" class="form-label">Slot</label>
+						       <input type="number" step="0.01" class="form-control" id="editSlot" name="slot" disabled>
+						   </div>
+                        <!-- Spot Type (Read-Only) -->
+                        <div class="mb-3">
+                            <label for="spotType" class="form-label">Spot Type</label>
+                            <input type="text" class="form-control" id="editSpotType" name="spotType" readonly>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+      function toggleForm(formId) {
+  // Hide all forms
+  const forms = document.querySelectorAll("form");
+  forms.forEach((form) => (form.style.display = "none"));
+
+  // Show the selected form
+  const selectedForm = document.getElementById(formId);
+  if (selectedForm) {
+    selectedForm.style.display = "block";
+  }
+}
+
+    </script>
+<!--    <script>-->
+<!--        // JavaScript to populate the edit form in the modal with the data of the selected spot-->
+<!--        const editButtons = document.querySelectorAll('[data-bs-toggle="modal"]');-->
+<!--        editButtons.forEach(button => {-->
+<!--            button.addEventListener('click', function () {-->
+<!--                document.getElementById('editSpotId').value = this.getAttribute('data-id');-->
+<!--                document.getElementById('editSpotName').value = this.getAttribute('data-spotname');-->
+<!--                document.getElementById('editLocation').value = this.getAttribute('data-location');-->
+<!--                document.getElementById('editPricePerHour').value = this.getAttribute('data-priceperhour');-->
+<!--                document.getElementById('editAvailability').value = this.getAttribute('data-availability');-->
+<!--				document.getElementById('editStation').value = this.getAttribute('data-station');-->
+<!--				document.getElementById('editSlot').value = this.getAttribute('data-slot');-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+        <script>
+            // Ensure modal is populated when the edit button is clicked
+            document.getElementById('editSpotModal').addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // The button that triggered the modal
+
+                // Set the values of each input field based on the data attributes from the button
+                document.getElementById('editSpotId').value = button.getAttribute('data-spotId');
+                document.getElementById('editSpotName').value = button.getAttribute('data-spotName');
+                document.getElementById('editLocation').value = button.getAttribute('data-location');
+                document.getElementById('editSpotType').value = button.getAttribute('data-spotType'); // Read-only field
+                document.getElementById('editPricePerHour').value = button.getAttribute('data-pricePerHour');
+                document.getElementById('editAvailability').value = button.getAttribute('data-availability');
+                document.getElementById('editSlot').value = button.getAttribute('data-slot');
+                document.getElementById('editStation').value = button.getAttribute('data-station');
+            });
+        </script>
+
+        </script>
+        <!-- jQery -->
+        <script src="js/jquery-3.4.1.min.js"></script>
+        <!-- popper js -->
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
+        </script>
+        <!-- nice select -->
+        <script src="js/jquery.nice-select.min.js"></script>
+        <!-- bootstrap js -->
+        <script src="js/bootstrap.js"></script>
+        <!-- Bootstrap 5 Bundle (Includes Popper.js) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Owl Carousel (if needed) -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+        <!-- Nice Select (if needed) -->
+        <script th:src="@{js/jquery.nice-select.min.js}"></script>
+
+        <!-- Custom JS -->
+        <script th:src="@{js/custom.js}"></script>
+
+  </body>
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quick Park Assist</title>
+<!--      <link rel="stylesheet" th:href="@{/css/tailwind.min.css}">-->
+
+<!--      <script src="https://cdn.tailwindcss.com"></script>-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+            rel="stylesheet"
+    />
+
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+    />
+    <link th:href="@{/css/homeStyle.css}" rel="stylesheet" />
+<!--    <link rel="stylesheet" th:href="@{/css/spotbooking/style.css}">-->
+    <style>
+      html, body, header {
+      margin: 0;
+      padding: 0;
+    }
+
+/* Styling for the cards */
+/* Styling for the cards */
+.addon-card {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+/* Add distinct colors to the cards */
+.card-header.bg-color-1 {
+  background-color: #17a2b8; /* Teal */
+}
+
+.card-header.bg-color-2 {
+  background-color: #ffc107; /* Yellow */
+}
+
+.card-header.bg-color-3 {
+  background-color: #6c757d; /* Gray */
+}
+
+.card-header.bg-color-4 {
+  background-color: #28a745; /* Green */
+}
+
+.selectButton {
+  transition: all 0.3s;
+}
+
+.selectButton.bg-red-500 {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.selectButton.bg-blue-500 {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+/* Reduced Size Checkout Button */
+#checkoutButton {
+  font-size: 1rem; /* Slightly smaller font size */
+  padding: 0.5rem 1rem; /* Adjusted padding for smaller size */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
+  border-radius: 0.5rem; /* Rounded corners */
+  bottom: 0.75rem; /* Reduced bottom margin */
+  right: 1.25rem; /* Positioned closer to the right edge */
+}
+
+#checkoutButton:hover {
+  background-color: #4caf50; /* Slightly darker green on hover */
+}
+
+.active {
+  background-color: #ff6f3c;
+  color: white;
+}
+
+    </style>
+  </head>
+
+  <body>
+    <!-- Background Image -->
+    <div th:class="@{bg-box}">
+      <img th:src="@{/images/slider-bg.jpg}" alt="Background Image" />
+    </div>
+
+    <!-- Header -->
+    <!-- Header section starts -->
+    <header class="header_section">
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg custom_nav-container">
+                <a class="navbar-brand" href="/" th:href="@{/}">
+            <span>
+              Quick Park Assist
+            </span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class=""> </span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item" th:classappend="${#request.requestURI == '/'} ? 'active'">
+                            <a class="nav-link" th:href="@{/}">Home</a>
+                        </li>
+                        <li class="nav-item"
+                            th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                            <a class="nav-link"
+                               th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/users' : '/registration'">
+                                <span th:if="${user == null}">Registration</span>
+                                <span th:if="${user != null && user.role == 'SPOT_OWNER'}">View Profile</span>
+                                <span th:if="${user != null && user.role != 'SPOT_OWNER' }">Add Vehicle</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item" th:if="${user != null and user.role == 'SPOT_OWNER'}"
+                            th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+                            <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+                        </li>
+
+                        <li class="nav-item"
+                            th:classappend="${#request.requestURI == '/why'} ? 'active'">
+                            <a class="nav-link"
+                               th:href="${user == null or user.role == 'SPOT_OWNER'} ? '/users' : '/booking'"
+                               th:if="${user == null or user.role != 'SPOT_OWNER'}">Booking</a>
+                        </li>
+
+                        <li class="nav-item active" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+                            <a class="nav-link "
+                               th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/addAddonServices' :  '/viewAllAddonServices'">
+                                Addon Services
+                            </a>
+                        </li>
+
+                        <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+                            <a class="nav-link"  th:href="${user == null or user.role == 'SPOT_OWNER'} ? '/users' : '/reservations'"   th:if="${user == null or user.role != 'SPOT_OWNER'}">Ev charge</a>
+                        </li>
+                    </ul>
+
+                    <!-- Authentication Section -->
+                    <!-- Authentication Section -->
+                    <ul class="navbar-nav ml-auto">
+                        <li th:if="${#authentication.authenticated}" class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-user"></i> <span th:text="${#authentication.name}">User</span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                            </div>
+                        </li>
+                        <li th:if="${!#authentication.authenticated}" class="nav-item">
+                            <a class="nav-link" th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a>
+                        </li>
+                    </ul>
+
+                </div>
+            </nav>
+        </div>
+    </header>
+    <!-- End header section -->
+    <script>
+      function updateProfile() {
+        // Redirect to the profile update page
+        window.location.href = '/updateProfile';
+    }
+
+    function confirmLogout() {
+        // Show the logout confirmation modal
+        $('#logoutConfirmationModal').modal('show');
+    }
+
+    </script>
+
+
+
+
+    <!-- About Section -->
+    <div class="container-fluid m-5" >
+        <div class="row  my-5">
+            <!-- Sidebar Navigation -->
+            <div class="col-md-3 bg-dark p-5">
+                <h3 style="color: white;">Addon Services</h3>
+                <ul class="nav flex-column">
+                    <li class="nav-item" th:if="${user.role == 'SPOT_OWNER'}">
+                        <a class="nav-link text-light"
+                           th:href="@{/addAddonServices}"
+                           onclick="toggleForm('addNewSpotForm')">
+                            <span >Create new Addon Pack </span>
+
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a
+                                class="nav-link active text-light"
+                                th:if="${user.role != 'SPOT_OWNER'}"
+                                th:href="@{/viewAllAddonServices}"
+                                onclick="toggleForm('removeSpotForm')"
+                        >View all Addon Offers</a
+                        >
+                    </li>
+                    <li class="nav-item" >
+                        <a
+                                class="nav-link text-light"
+                                th:if="${user.role != 'SPOT_OWNER'}"
+                                th:href="@{/modifySelectedAddonServices}"
+                                onclick="toggleForm('userVehiclesFrom')"
+                        >Modify Addon Details</a
+                        >
+                    </li>
+                    <li class="nav-item" th:if="${user.role == 'SPOT_OWNER'}">
+
+
+                        <a th:href="@{/removeAddonServices}" class="nav-link text-light"
+
+                           onclick="toggleForm('modifySpotForm')">Modify/Remove addon pack</a>
+
+
+                    </li>
+
+                </ul>
+            </div>
+
+
+
+
+
+            <div class="col-md-8 bg-light py-5 ">
+                <div class="container my-4" style="max-height: 350px; overflow-y: auto;">
+                <h3 class=" font-weight-bold text-dark mb-4">Enhance Your Parking Experience with Our Addon Services</h3>
+                <div class="row">
+                    <div
+                            th:each="service : ${addon}"
+                            class="col-lg-4 col-md-6 col-sm-12 mb-4"
+                    >
+                        <div class="addon-card card shadow-lg border-0 h-100">
+                            <div class="card-header text-center text-white font-weight-bold py-4">
+                                <span th:text="${service.name}">Addon Name</span>
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="text-orange-500 mb-3">
+                                    <i class="fas fa-car fa-3x"></i>
+                                </div>
+                                <p class="card-text text-muted mb-3" th:text="${service.description}">
+                                    Description
+                                </p>
+                                <p class="text-dark font-weight-bold h5 mb-4">
+                                    &#8377;<span th:text="${service.price}"></span>
+                                </p>
+                                <form id="addonForm" method="get" class="addon-form">
+                                    <input
+                                            type="hidden"
+                                            name="addonID"
+                                            th:value="${service.ServiceID}"
+                                    />
+                                    <input
+                                            type="hidden"
+                                            name="duration"
+                                            th:value="${service.duration}"
+                                    />
+                                    <button
+                                            type="button"
+                                            class="selectButton btn btn-primary btn-block font-weight-bold"
+                                    >
+                                        Select
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkout Button -->
+                <!-- Checkout Button -->
+                <!-- Checkout Button -->
+                <button
+                        id="checkoutButton"
+                        class="fixed bottom-3 right-5 btn btn-success shadow-lg text-white font-weight-bold px-4 py-2"
+                >
+                    Checkout
+                </button>
+
+
+            </div>
+
+
+</div>
+    </div>
+            <script>document.addEventListener("DOMContentLoaded", () => {
+  const bgColors = ["bg-color-1", "bg-color-2", "bg-color-3", "bg-color-4"];
+
+  // Assign colors to cards
+  document.querySelectorAll(".addon-card .card-header").forEach((header, index) => {
+    const colorClass = bgColors[index % bgColors.length];
+    header.classList.add(colorClass);
+  });
+
+  // Arrays to store selected addon serviceIDs and durations
+  let selectedServiceIDs = [];
+  let selectedDurations = [];
+
+  // Handle the select button click
+  document.querySelectorAll(".selectButton").forEach((button) => {
+    button.addEventListener("click", function () {
+      const form = button.closest(".addon-form");
+      const serviceID = form.querySelector('input[name="addonID"]').value;
+      const duration = form.querySelector('input[name="duration"]').value;
+
+      if (button.innerText === "Select") {
+        selectedServiceIDs.push(serviceID);
+        selectedDurations.push(duration);
+
+        button.innerText = "Delete";
+        button.classList.remove("btn-primary");
+        button.classList.add("btn-danger");
+      } else {
+        const indexToRemove = selectedServiceIDs.indexOf(serviceID);
+        if (indexToRemove > -1) {
+          selectedServiceIDs.splice(indexToRemove, 1);
+          selectedDurations.splice(indexToRemove, 1);
+        }
+
+        button.innerText = "Select";
+        button.classList.remove("btn-danger");
+        button.classList.add("btn-primary");
+      }
+
+      console.log("Selected Service IDs:", selectedServiceIDs);
+      console.log("Selected Durations:", selectedDurations);
+    });
+  });
+
+  // Checkout button functionality
+  document.getElementById("checkoutButton").addEventListener("click", async () => {
+    if (selectedServiceIDs.length === 0) {
+      alert("Please select at least one addon service before proceeding.");
+      return;
+    }
+
+    const serviceIDsString = selectedServiceIDs.join(",");
+    const durationsString = selectedDurations.join(",");
+
+    try {
+      const response = await fetch("/selectedAddonService", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          serviceIDs: serviceIDsString,
+          durations: durationsString,
+        }),
+      });
+
+      if (response.ok) {
+        alert("Addons booked successfully!");
+      } else {
+        const error = await response.text();
+        alert(`Error: ${error}`);
+      }
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
+    }
+  });
+});
+            </script>
+    <!-- Footer -->
+<!--    <footer-->
+<!--      class="bg-gray-800 text-white text-center p-4 mt-16 fixed bottom-0 left-0 w-full z-10"-->
+<!--    >-->
+<!--      <p>-->
+<!--        &copy; 2024 All Rights Reserved by-->
+<!--        <a href="#" class="text-blue-400 hover:underline"-->
+<!--          >Smart Parking Spots</a-->
+<!--        >-->
+<!--      </p>-->
+<!--    </footer>-->
+
+    <script>
+      // Define a list of Tailwind background color classes
+      const bgColors = [
+        "bg-green-500",
+        "bg-yellow-500",
+        "bg-pink-500",
+        "bg-purple-500",
+      ];
+
+      // Get all elements with the "addon-card" class
+      const addonCards = document.querySelectorAll(".addon-card");
+
+      // Assign a random background color to each addon card
+      addonCards.forEach((card) => {
+        const randomColor =
+          bgColors[Math.floor(Math.random() * bgColors.length)];
+        card.classList.add(randomColor);
+      });
+
+      // Arrays to store selected addon serviceIDs and durations
+      let selectedServiceIDs = [];
+      let selectedDurations = [];
+
+      // Handle the select button click
+      document.querySelectorAll(".selectButton").forEach((button, index) => {
+        button.addEventListener("click", function toggleSelectDelete() {
+          const form = button.closest(".addon-form");
+          const serviceID = form.querySelector('input[name="addonID"]').value;
+          const duration = form.querySelector('input[name="duration"]').value;
+
+          // Check if button is in "Select" state or "Delete" state
+          if (button.innerText === "Select") {
+            // Add serviceID and duration to the respective lists
+            selectedServiceIDs.push(serviceID);
+            selectedDurations.push(duration);
+
+            // Change button to "Delete"
+            button.innerText = "Delete";
+            button.classList.remove("bg-blue-500");
+            button.classList.add("bg-red-500");
+          } else if (button.innerText === "Delete") {
+            // Find the index of the serviceID to delete
+            const indexToRemove = selectedServiceIDs.indexOf(serviceID);
+
+            // If the serviceID exists, remove it from both arrays
+            if (indexToRemove > -1) {
+              selectedServiceIDs.splice(indexToRemove, 1);
+              selectedDurations.splice(indexToRemove, 1);
+            }
+
+            // Reset button to "Select"
+            button.innerText = "Select";
+            button.classList.remove("bg-red-500");
+            button.classList.add("bg-blue-500");
+          }
+
+          // Log updated state of the lists
+          console.log("Updated Service IDs: ", selectedServiceIDs);
+          console.log("Updated Durations: ", selectedDurations);
+        });
+      });
+
+      // Handle checkout button click
+      document
+        .getElementById("checkoutButton")
+        .addEventListener("click", async function () {
+          if (selectedServiceIDs.length === 0) {
+            alert("Please select at least one addon service before proceeding.");
+            return;
+          }
+          try {
+            // Combine serviceIDs and durations into single strings
+            const serviceIDsString = selectedServiceIDs.join(",");
+            const durationsString = selectedDurations.join(",");
+
+            // Log the final strings being sent
+            console.log("Final Service IDs String: ", serviceIDsString);
+            console.log("Final Durations String: ", durationsString);
+
+            // Send the strings in the body
+            const response = await fetch("/selectedAddonService", {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: new URLSearchParams({
+                serviceIDs: serviceIDsString,
+                durations: durationsString,
+              }),
+            });
+
+            if (response.ok) {
+              alert("Addons booked successfully!");
+            } else {
+              const error = await response.text();
+              alert(`Error: ${error}`);
+            }
+          } catch (err) {
+            alert("Something went wrong. Please try again.");
+          }
+        });
+    </script>
+    <script>
+      function toggleForm(formId) {
+  // Hide all forms
+  const forms = document.querySelectorAll("form");
+  forms.forEach((form) => (form.style.display = "none"));
+
+  // Show the selected form
+  const selectedForm = document.getElementById(formId);
+  if (selectedForm) {
+    selectedForm.style.display = "block";
+  }
+  }
+
+    </script>
+    <!-- jQery -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <!-- popper js -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
+    </script>
+    <!-- nice select -->
+    <script src="js/jquery.nice-select.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="js/bootstrap.js"></script>
+    <!-- owl slider -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+    </script>
+    <!-- custom js -->
+    <script src="js/custom.js"></script>
+
+
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

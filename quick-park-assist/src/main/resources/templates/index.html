@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Quick Park Assist</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+
+
+  <!-- Fonts style -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <!-- Nice select -->
+  <link rel="stylesheet" href="css/nice-select.min.css">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+
+
+
+  <!-- Owl slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+  <!-- Font awesome style -->
+<!--  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">-->
+
+  <!-- Owl Carousel CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- Custom styles for this template -->
+  <link href="css/homeStyle.css" rel="stylesheet" />
+
+  <link href="css/dashboard.css" rel="stylesheet" />
+  <!-- Responsive style -->
+  <link href="css/responsive.css" rel="stylesheet" />
+
+
+</head>
+
+<body>
+
+  <div class="hero_area">
+    <div class="bg-box">
+      <img src="images/slider-bg.jpg" alt="">
+    </div>
+
+    <!-- Header section starts -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="/" th:href="@{/}">
+            <span>
+              Quick Park Assist
+            </span>
+          </a>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class=""> </span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+              <li class="nav-item" th:classappend="${#request.requestURI == '/'} ? 'active'">
+                <a class="nav-link" th:href="@{/}">Home</a>
+              </li>
+              <li class="nav-item " th:if="${user==null or user.availability=='ACTIVE'}"
+                  th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                <a class="nav-link"
+                   th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/users' : '/registration'" >
+                  <span th:if="${user == null}">Registration</span>
+                  <span th:if="${user != null && user.role == 'SPOT_OWNER'  && user.availability != 'DE-ACTIVATED'}">View Profile</span>
+                  <span th:if="${user != null && user.role != 'SPOT_OWNER'  && user.availability != 'DE-ACTIVATED' }">Add Vehicle</span>
+                </a>
+              </li>
+
+              <li class="nav-item  " th:classappend="${#request.requestURI == '/registration'} ? 'active'">
+                <a class="nav-link" th:href="@{/edit/{email}(email=${user.email})}" th:if="${user!=null && user.availability !='ACTIVE'}" >Activate Account</a></li>
+
+
+
+
+              <li class="nav-item" th:if="${user != null and user.role == 'SPOT_OWNER' and user.availability != 'DE-ACTIVATED'}"
+                  th:classappend="${#request.requestURI == '/spot-management'} ? 'active'">
+                <a class="nav-link" th:href="@{/spot-management}">Smart spots</a>
+              </li>
+
+              <li class="nav-item"
+                  th:classappend="${#request.requestURI == '/why'} ? 'active'">
+                <a class="nav-link"
+                   th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/users' : '/booking'"
+                   th:if="${user != null && user.role != 'SPOT_OWNER' and user.availability != 'DE-ACTIVATED'}">Booking</a>
+
+
+                <a class="nav-link" th:if="${#authentication.principal == 'anonymousUser'}" th:href="@{'/'}">Booking</a>
+              </li>
+
+
+              <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+
+
+                <a class="nav-link"
+                    th:if="${  user!=null && user.availability != 'DE-ACTIVATED'}"
+                   th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/addAddonServices' :  '/viewAllAddonServices'">
+                  Addon Services
+                </a>
+
+                <a class="nav-link" th:if="${#authentication.principal == 'anonymousUser'}" th:href="@{'/'}">Addon Services</a>
+              </li>
+
+              <li class="nav-item" th:classappend="${#request.requestURI == '/testimonial'} ? 'active'">
+                <a class="nav-link"  th:href="${user != null && user.role == 'SPOT_OWNER'} ? '/users' : '/reservations'"     th:if="${user != null && user.role != 'SPOT_OWNER' and user.availability != 'DE-ACTIVATED'}">Ev Charge</a>
+                <a class="nav-link" th:if="${#authentication.principal == 'anonymousUser'}" th:href="@{'/'}">Ev Charge</a>
+              </li>
+            </ul>
+
+            <!-- Authentication Section -->
+            <ul class="navbar-nav ml-auto">
+              <li th:if="${#authentication.authenticated}" class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-user"></i> <span th:text="${#authentication.name}">User</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                </div>
+              </li>
+              <li th:if="${!#authentication.authenticated}" class="nav-item">
+                <a class="nav-link" th:href="@{/login}"><i class="fa fa-sign-in"></i> Login</a>
+              </li>
+            </ul>
+
+<!--            <form class="form-inline">-->
+<!--              <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">-->
+<!--                <i class="fa fa-search" aria-hidden="true"></i>-->
+<!--              </button>-->
+<!--            </form>-->
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- End header section -->
+
+    <!-- Slider section -->
+    <section class="slider_section">
+      <div class="container">
+        <div class="detail-box col-md-9 mx-auto px-0">
+          <h1>
+            Finding Parking Lots Made Easy
+          </h1>
+          <p>
+            Struggling to find a parking spot? Our platform simplifies parking by providing real-time information on available parking lots near you. Whether you're at work, shopping, or traveling, we make parking stress-free by helping you find spots quickly and easily. Save time and reduce the hassle with our user-friendly system designed for your convenience.
+          </p>
+        </div>
+
+        <br> <br>
+        <!--        login form-->
+        <!--        <div class="find_form_container">-->
+        <div th:if="${user == null}" class="col-md bg-light py-5">
+          <!-- Add New Parking Spot Form -->
+          <div class="container" style="max-height: 400px; overflow-y: auto;">
+            <h1 class="text-center">User Login Page</h1>
+            <form th:action="@{/login}" method="post" class="mt-4">
+              <!-- Error message -->
+              <div th:if="${param.error}">
+                <div class=" alert-danger custom-alert mb-4 ">
+                  Invalid email address or password.
+                </div>
+              </div>
+
+
+
+              <!-- Logout message -->
+              <div th:if="${param.logout}">
+                <div class="alert alert-info">You have been logged out.</div>
+              </div>
+
+              <div class="form-group row align-items-center mb-3">
+                <label for="username" class="col-sm-3 col-form-label text-end">
+                  Email:
+                </label>
+                <div class="col-sm-9">
+                  <input
+                          type="text"
+                          class="form-control"
+                          id="username"
+                          name="username"
+                          placeholder="Enter Email ID"
+                          autofocus="autofocus"
+                          required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group row align-items-center mb-3">
+                <label for="password" class="col-sm-3 col-form-label text-end">
+                  Password:
+                </label>
+                <div class="col-sm-9">
+                  <input
+                          type="password"
+                          id="password"
+                          name="password"
+                          class="form-control"
+                          placeholder="Enter Password"
+                          required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-sm-9 offset-sm-3">
+                  <input
+                          type="submit"
+                          name="login-submit"
+                          id="login-submit"
+                          class="btn btn-primary w-100"
+                          value="Log In"
+                  />
+                </div>
+              </div>
+            </form>
+
+            <!-- Forgot Password link outside the form -->
+            <div class="form-group text-center mt-3">
+              <a href="/forgotPassword" th:href="@{/forgotPassword}" class="btn btn-light" style="color: #ff6f3c;">Forgot Password?</a>
+            </div>
+
+            <div class="form-group text-center mt-3">
+      <span>
+        New user?
+        <a href="/" th:href="@{/registration}">Register here</a>
+      </span>
+            </div>
+          </div>
+        </div>
+
+
+        <br> <br>
+
+        <div class="row justify-content-center">
+          <!-- Display message if user is not null -->
+          <div th:if="${user != null}">
+            <div class="alert alert-dismissible fade show" role="alert">
+              <h4 class="alert-heading text-center" style="font-size: 1.8em; font-weight: bold;">
+                Welcome Back, <span th:text="${user.fullName}"></span>!
+              </h4>
+              <p class="text-center" style="font-size: 1.2em; margin-top: 10px;">
+                We're thrilled to have you back. Here's a quick overview of your profile details.
+              </p>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="color: white;">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+
+
+          <div class="container mt-4">
+            <div class="row justify-content-center">
+              <!-- Check if user data exists -->
+              <div class="col-md-8" th:if="${user != null}"> <!-- Changed col-md-6 to col-md-8 for more width -->
+                <div class="card shadow-sm">
+                  <div class="card-body">
+                    <h5 class="card-title text-primary" th:text="${user.fullName}"></h5>
+                    <p class="card-text">
+                      <strong>Email:</strong> <span th:text="${user.email}"></span><br />
+                      <strong>Status:</strong>
+                      <span th:text="${user.availability}"
+                            th:class="${user.availability == 'ACTIVE' ? 'text-success' : 'text-danger'}">
+              </span><br />
+                      <strong>Phone:</strong> <span th:text="${user.phoneNumber}"></span><br />
+                      <strong>Address:</strong> <span th:text="${user.address}"></span><br />
+                      <strong>Role:</strong> <span th:text="${user.role}"></span><br />
+<!--                      <strong>Has Electric Vehicle:</strong>-->
+<!--                      <span th:text="${user.hasElectric}"></span>-->
+                    </p>
+
+                    <!-- Updated button to Update Profile -->
+                    <a href="/edit/{email}" class="btn btn-warning btn-sm  mt-2"
+                       th:href="@{/edit/{email}(email=${user.email})}">
+                      <span th:if="${user.availability != 'DE-ACTIVATED'}">Update Profile</span>
+                      <span th:if="${user.availability == 'DE-ACTIVATED'}">Activate Account</span>
+
+                    </a>
+                    <a href="/spot-management" class="btn btn-warning btn-sm ml-2  mt-2" th:href="@{/spot-management}"
+                       th:if="${user.role == 'SPOT_OWNER'  && user.availability!='DE-ACTIVATED'}">
+                      Add Spots
+                    </a>
+
+                    <a href="/addAddonServices" class="btn btn-warning btn-sm ml-2  mt-2" th:href="@{/addAddonServices}"
+                       th:if="${user.role == 'SPOT_OWNER'  && user.availability!='DE-ACTIVATED'}">
+                      Create Addon Pack
+                    </a>
+
+
+
+                    <a href="/registration" class="btn btn-warning btn-sm ml-2  mt-2" th:href="@{/registration}"  th:if="${user.role != 'SPOT_OWNER'  && user.availability!='DE-ACTIVATED'}">
+                      Add Vehicles
+                    </a>
+
+
+                    <a href="/view-vehicle" class="btn btn-warning btn-sm ml-2  mt-2" th:href="@{/view-vehicle}"  th:if="${user.role != 'SPOT_OWNER'  && user.availability!='DE-ACTIVATED'}">
+                      View Vehicles
+                    </a>
+
+                    <!-- Updated button to Book Spot -->
+                    <a href="/booking" class="btn btn-warning btn-sm ml-2  mt-2 md-6" th:href="@{/booking}"  th:if="${user.role != 'SPOT_OWNER'  && user.availability!='DE-ACTIVATED'}">
+                      Booking Spot
+                    </a>
+                    <!--                     Updated button for EV reservation-->
+                    <a href="/reservations" class="btn btn-warning btn-sm ml-2 mt-2 md-6" th:href="@{/reservations}"  th:if="${user.role != 'SPOT_OWNER' && user.availability!='DE-ACTIVATED'}">
+                      Reserve EV
+                    </a>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </section>
+    <!-- End slider section -->
+  </div>
+
+
+
+  <!-- About Section -->
+  <section class="custom-about-section">
+    <div class="container">
+      <div class="mb-5">
+        <h2 class="custom-about-title" id="aboutTitle">About Us</h2>
+        <p class="custom-about-desc" id="aboutDesc">
+          We are a team of passionate tech enthusiasts, urban problem-solvers, and customer-focused innovators.
+        </p>
+      </div>
+
+      <div class="row align-items-center custom-about-row" id="customAboutRow">
+        <!-- Image Box -->
+        <div class="col-lg-6 custom-about-image" id="aboutImage">
+          <img th:src="@{/images/about-img.jpg}" alt="About Us" class="img-fluid rounded">
+        </div>
+
+        <!-- Text Box -->
+        <div class="col-lg-6 custom-about-text" id="customAboutText">
+          <h3 class="mb-3" id="helpTitle">We Are Here To Help</h3>
+          <p>
+            We understand the frustrations of wasting time and fuel searching for parking, and we're here to change that. With cutting-edge technology and user-friendly design, we're committed to creating a seamless parking experience for everyone.
+          </p>
+          <p>At SmartPark, we believe that parking shouldn't be a headache—it should be effortless.</p>
+
+          <!-- Collapsible Section -->
+          <div class="collapse custom-about-collapse" id="customAboutCollapse">
+            <p>
+              With the increasing demand for smart urban solutions, we aim to create an ecosystem that enhances mobility and makes parking more accessible, efficient, and sustainable. Our solutions are designed to reduce congestion, save time, and provide more control to both users and spot owners.
+            </p>
+            <p>
+              Whether it's smart spot management, real-time availability, or seamless integration with payment systems, we are dedicated to revolutionizing parking to benefit everyone involved.
+            </p>
+            <p>
+              Join us in shaping the future of urban mobility, and let's work together to make parking smarter, safer, and easier for all.
+            </p>
+          </div>
+
+          <!-- Read More Button -->
+          <a href="javascript:void(0);"
+             class="btn custom-about-btn mt-3"
+             id="customAboutReadMoreBtn"
+             data-bs-toggle="collapse"
+             data-bs-target="#customAboutCollapse"
+             aria-expanded="false"
+             aria-controls="customAboutCollapse">
+            Read More
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- why section -->
+  <section class="why_section py-5">
+    <div class="container">
+      <div class="heading_container text-center ">
+        <h2>Why Choose Us</h2>
+        <p>
+          Trusted by thousands of users for reliable parking solutions. Partnerships with top parking operators to ensure maximum coverage.
+        </p>
+        <p> A user-first approach, continuously improving based on your feedback. </p>
+
+      </div>
+
+      <br>
+      <span>That’s why we focus on: </span>
+      <span class="mb-5" style="white-space: pre; margin-left: 2em;">
+        Convenience: Real-time availability and hassle-free booking at your fingertips.
+        Efficiency: Optimizing parking to save time and reduce environmental impact.
+        Reliability: Ensuring you always have a spot when you need it.
+      </span>
+
+      <div class="row gy-4">
+        <!-- Box 1 -->
+        <div class="col-md-5 col-lg-4">
+          <div class="box text-center">
+            <div class="img-box mx-auto">
+              <img src="images/w1.png" alt="No Booking Fees">
+            </div>
+            <div class="detail-box mt-4">
+              <h4>No Booking Fees</h4>
+              <p>
+                When you book your parking spot through our platform, you only pay for what matters - the parking itself. No hidden charges, no surprises. Just a simple, straightforward way to reserve your spot and save money.              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Box 2 -->
+        <div class="col-md-5 col-lg-4">
+          <div class="box text-center">
+            <div class="img-box mx-auto">
+              <img src="images/w2.png" alt="Online Payments">
+            </div>
+            <div class="detail-box mt-4">
+              <h4>Online Payments</h4>
+              <p>
+                Say goodbye to cash or worrying about change. With SmartPark, paying for your parking is as effortless as booking it. Our secure online payment system ensures a smooth checkout process every time.              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Box 3 -->
+        <div class="col-md-5 col-lg-4">
+          <div class="box text-center">
+            <div class="img-box mx-auto">
+              <img src="images/w3.png" alt="Simple Booking Process">
+            </div>
+            <div class="detail-box mt-4">
+              <h4>Simple Booking Process</h4>
+              <p>
+                Find, book, and park in just a few taps with our simple and user-friendly booking process. Real-time options, transparent pricing, and instant confirmations - parking has never been this effortless!              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end why section -->
+
+
+
+  <!-- client section -->
+
+  <section class="client_section layout_padding">
+    <div class="container">
+      <div class="heading_container col">
+        <h2>
+          What Says Our <span>Client</span>
+        </h2>
+      </div>
+      <div class="client_container">
+        <div class="carousel-wrap ">
+          <div class="owl-carousel client_owl-carousel">
+            <div class="item">
+              <div class="box">
+                <div class="detail-box">
+                  <p>
+                    Quick Park Assist has been a game-changer for me! I used to spend so much time circling the block looking for a parking spot. Now, I just book in advance and head straight to my spot. It's quick, easy, and I never have to worry about finding parking again. Highly recommend it to anyone who hates the parking struggle!                  </p>
+                </div>
+                <div class="client_id">
+                  <div class="img-box">
+                    <img src="images/c1.jpg" alt="" class="img-1">
+                  </div>
+                  <div class="name">
+                    <h6>
+                      Sarah T
+                    </h6>
+                    <p>
+                      Event-Goer
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="box">
+                <div class="detail-box">
+                  <p>
+                    I love how convenient Quick Park Assist is! I can easily find parking near popular spots, even during busy hours. The booking process is seamless, and I don't have to deal with paying at meters or machines anymore. It's stress-free, and I'm always on time. Definitely my go-to app for parking! Will choose this always!                  </p>
+                </div>
+                <div class="client_id">
+                  <div class="img-box">
+                    <img src="images/c2.jpg" alt="" class="img-1">
+                  </div>
+                  <div class="name">
+                    <h6>
+                      James M
+                    </h6>
+                    <p>
+                      Commuter
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Owl Carousel JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+
+
+  <!-- end client section -->
+
+  <!-- info section -->
+  <section class="info_section ">
+
+    <div class="container">
+      <div class="info_top ">
+        <div class="row ">
+          <div class="col-md-6 col-lg-3 info_col">
+            <div class="info_form">
+              <h4>
+                Stay Connected
+              </h4>
+              <form action="">
+                <input type="text" placeholder="Enter Your Email" />
+                <button type="submit">
+                  Subscribe
+                </button>
+              </form>
+              <div class="social_box">
+                <a href="">
+                  <i class="fa fa-facebook" aria-hidden="true"></i>
+                </a>
+                <a href="">
+                  <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+                <a href="">
+                  <i class="fa fa-linkedin" aria-hidden="true"></i>
+                </a>
+                <a href="">
+                  <i class="fa fa-instagram" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 info_col ">
+            <div class="info_detail">
+              <h4>
+                About Us
+              </h4>
+              <p>
+                At Quick Park Assist, we're revolutionizing parking with easy, reliable, and hassle-free solutions. Our mission is to save you time, reduce stress, and make parking a breeze—wherever you go. Discover smarter parking today!              </p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 info_col ">
+            <div class="info_detail">
+              <h4>
+                Online Booking
+              </h4>
+              <p>
+                Book your parking spot in just a few taps! With Quick Park Assist, find available spaces in real-time, reserve ahead, and enjoy a seamless, stress-free experience. Simple, fast, and reliable parking at your fingertips!              </p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 info_col">
+            <h4>
+              Contact us
+            </h4>
+            <p>
+              For any help or questions regarding bookings, payments, or the app, reach out to us at:            </p>
+            <div class="contact_nav">
+              <a href="">
+                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                <span>
+                  Location
+                </span>
+              </a>
+              <a href="">
+                <i class="fa fa-phone" aria-hidden="true"></i>
+                <span>
+                  Call : +01 123455678990
+                </span>
+              </a>
+              <a href="">
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <span>
+                  Email : demo@gmail.com
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- end info_section -->
+
+<!-- footer section -->
+<footer class="footer_section">
+    <div class="container">
+        <p>
+            &copy; <span id="displayYear"></span> All Rights Reserved By
+            <a th:href="@{/}">Quick park assist</a>
+        </p>
+    </div>
+</footer>
+<!-- footer section -->
+
+
+
+  <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+     const readMoreBtn = document.getElementById("customAboutReadMoreBtn");
+     const aboutCollapse = document.getElementById("customAboutCollapse");
+     const aboutText = document.getElementById("customAboutText");
+     const aboutImage = document.getElementById("aboutImage");
+
+     // Monitor collapse show/hide events
+     aboutCollapse.addEventListener("show.bs.collapse", function () {
+       // Update button text and change text box to col-12
+       readMoreBtn.textContent = "Read Less";
+       aboutText.classList.remove("col-lg-6");
+       aboutText.classList.add("col-lg-12");
+       aboutImage.style.display = "none"; // Hide image
+     });
+
+     aboutCollapse.addEventListener("hide.bs.collapse", function () {
+       // Revert button text and text box to col-6
+       readMoreBtn.textContent = "Read More";
+       aboutText.classList.remove("col-lg-12");
+       aboutText.classList.add("col-lg-6");
+       aboutImage.style.display = "block"; // Show image
+     });
+   });
+   $(document).ready(function () {
+     $(".client_owl-carousel").owlCarousel({
+       loop: true,
+       margin: 20,
+       nav: true,
+       dots: true,
+       autoplay: true,
+       autoplayTimeout: 5000,
+       items: 1
+     });
+   });
+  </script>
+
+  <!-- jQery -->
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <!-- popper js -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js">
+  </script>
+  <!-- nice select -->
+  <script src="js/jquery.nice-select.min.js"></script>
+  <!-- bootstrap js -->
+  <script src="js/bootstrap.js"></script>
+  <!-- owl slider -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <!-- custom js -->
+  <script src="js/custom.js"></script>
+
+  <!-- Bootstrap JS and Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>
